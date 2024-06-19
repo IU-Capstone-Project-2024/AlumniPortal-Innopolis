@@ -14,6 +14,7 @@ import (
 var body struct {
 	Name     string
 	LastName string
+	Surname  string
 	Email    string
 	Password string
 }
@@ -34,7 +35,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	user := models.User{Name: body.Name, LastName: body.LastName, Email: body.Email, Password: string(hash)}
+	user := models.User{Name: body.Name, Surname: body.Surname, LastName: body.LastName, Email: body.Email, Password: string(hash)}
 
 	result := initializers.DB.Create(&user)
 
@@ -89,7 +90,7 @@ func Login(c *gin.Context) {
 	}
 
 	c.SetSameSite(http.SameSiteLaxMode)
-	c.SetCookie("Authorization", tokenString, 3600*24, "", "", false, true) // TODO: false -> true security
+	c.SetCookie("Authorization", tokenString, 3600*24, "", "", false, true) // TODO: false -> true: security
 	c.JSON(http.StatusOK, gin.H{})
 }
 
@@ -121,8 +122,13 @@ func GetInfo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"Name":     user.(models.User).Name,
-		"LastName": user.(models.User).LastName,
-		"Email":    user.(models.User).Email,
+		"Name":           user.(models.User).Name,
+		"LastName":       user.(models.User).LastName,
+		"Surname":        user.(models.User).Surname,
+		"Email":          user.(models.User).Email,
+		"Role":           user.(models.User).Role,
+		"Specialization": user.(models.User).Specialization,
+		"Portfolio":      user.(models.User).PortfolioLink,
+		"Socials":        user.(models.User).SocialsLink,
 	})
 }

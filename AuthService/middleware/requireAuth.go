@@ -12,6 +12,38 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+var body struct {
+	Name     string
+	LastName string
+	Surname  string
+	Email    string
+	Password string
+}
+
+func RequireVerify(c *gin.Context) {
+	user, exists := c.Get("user")
+	if exists == false {
+		c.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	// TODO: Add RequireAuth + user.verified == true (from DB using ID)
+
+	/*
+		var temp models.User = initializers.DB.First(&user, claims["sub"])
+		if temp.ID == 0 {
+			c.AbortWithStatus(http.StatusUnauthorized)
+			return
+		}
+		if user.Verified == True && temp.Verified == True {
+			C.Next()
+		}
+		c.AbortWithStatus(http.StatusNotAcceptable)
+		return
+	*/
+
+}
+
 func RequireAuth(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 
