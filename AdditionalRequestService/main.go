@@ -1,11 +1,12 @@
-package AdditionalRequestService
+package main
 
 import (
 	"AdditionalRequestService/routes/admin"
 	"AdditionalRequestService/routes/alumni"
+	"alumniportal.com/shared/initializers"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"shared/initializers"
+	"github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -31,10 +32,10 @@ func main() {
 	alumni.SetupRouter(r)
 	admin.SetupRouter(r)
 
-	err := r.Run()
+	err := r.Run(":9090")
 
 	if err != nil {
-		panic("Error starting AuthService")
+		panic("Error starting AdditionalRequestService")
 	}
-
+	logrus.Info("AdditionalRequestService successfully started!")
 }

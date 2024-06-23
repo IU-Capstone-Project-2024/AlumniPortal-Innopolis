@@ -1,4 +1,4 @@
-module AlumniPortal-Innopolis/shared
+module alumniportal.com/shared
 
 go 1.22.2
 
@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/joho/godotenv v1.5.1
+	github.com/sirupsen/logrus v1.9.3
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.10
 )

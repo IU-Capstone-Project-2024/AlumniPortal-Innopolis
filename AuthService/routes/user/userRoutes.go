@@ -2,8 +2,8 @@ package user
 
 import (
 	"AuthService/controllers"
+	"alumniportal.com/shared/middleware"
 	"github.com/gin-gonic/gin"
-	"shared/middleware"
 )
 
 func SetupRouter(route *gin.Engine) {

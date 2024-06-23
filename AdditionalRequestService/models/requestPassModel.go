@@ -1,8 +1,8 @@
 package models
 
 import (
+	"alumniportal.com/shared/models"
 	"gorm.io/gorm"
-	"shared/models"
 	"time"
 )
 
@@ -23,8 +23,8 @@ const (
 
 type PassRequest struct {
 	gorm.Model
-	UserID             uint        `gorm:"not null"`
-	User               models.User `gorm:"foreignKey:UserID"`
+	UserID             uint        `gorm:"not null;index"`
+	User               models.User `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 	PassStartDate      time.Time   `gorm:"not null"`
 	PassExpirationDate time.Time   `gorm:"not null"`
 	Message            string

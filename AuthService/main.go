@@ -1,11 +1,12 @@
-package AuthService
+package main
 
 import (
 	"AuthService/routes/admin"
 	"AuthService/routes/user"
+	"alumniportal.com/shared/initializers"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"shared/initializers"
+	"github.com/sirupsen/logrus"
 )
 
 func init() {
@@ -36,5 +37,5 @@ func main() {
 	if err != nil {
 		panic("Error starting AuthService")
 	}
-
+	logrus.Info("AuthService successfully started!")
 }
