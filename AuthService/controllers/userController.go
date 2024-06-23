@@ -1,22 +1,21 @@
 package controllers
 
 import (
-	"AuthService/initializers"
-	"AuthService/models"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
+	"shared/initializers"
+	"shared/models"
 	"time"
 )
 
 var body struct {
-	Name     string
-	LastName string
-	Surname  string
-	Email    string
-	Password string
+	Name     string `json:"name"`
+	LastName string `json:"lastName"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 func Signup(c *gin.Context) {
@@ -35,7 +34,7 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	user := models.User{Name: body.Name, Surname: body.Surname, LastName: body.LastName, Email: body.Email, Password: string(hash)}
+	user := models.User{Name: body.Name, LastName: body.LastName, Email: body.Email, Password: string(hash)}
 
 	result := initializers.DB.Create(&user)
 
@@ -77,7 +76,7 @@ func Login(c *gin.Context) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"sub": user.ID,
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
+		"exp": time.Now().Add(time.Hour * 48).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
@@ -124,11 +123,12 @@ func GetInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"Name":           user.(models.User).Name,
 		"LastName":       user.(models.User).LastName,
-		"Surname":        user.(models.User).Surname,
 		"Email":          user.(models.User).Email,
 		"Role":           user.(models.User).Role,
 		"Specialization": user.(models.User).Specialization,
 		"Portfolio":      user.(models.User).PortfolioLink,
 		"Socials":        user.(models.User).SocialsLink,
+		"IsAlumni":       user.(models.User).IsAlumni,
+		"IsAdmin":        user.(models.User).IsAdmin,
 	})
 }

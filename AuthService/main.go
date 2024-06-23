@@ -1,10 +1,11 @@
 package AuthService
 
 import (
-	"AuthService/initializers"
+	"AuthService/routes/admin"
 	"AuthService/routes/user"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"shared/initializers"
 )
 
 func init() {
@@ -28,6 +29,7 @@ func main() {
 	}
 
 	user.SetupRouter(r)
+	admin.SetupRouter(r)
 
 	err := r.Run()
 
