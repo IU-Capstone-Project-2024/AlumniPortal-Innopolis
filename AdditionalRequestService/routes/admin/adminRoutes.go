@@ -13,7 +13,7 @@ func SetupRouter(route *gin.Engine) {
 	{
 		protected.GET("/unverified", controllers.GetUnverifiedRequests)
 		protected.GET("/unverified/:id", controllers.GetAdminPassRequest)
-		protected.DELETE("/request/:id", controllers.DeletePassRequest)
+		protected.DELETE("/delete/:id", controllers.DeletePassRequest)
 		protected.POST("/:id/approve", controllers.ApprovePassRequest)
 		protected.POST("/:id/decline", controllers.DeclinePassRequest)
 	}

@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"AdditionalRequestService/models"
 	"alumniportal.com/shared/initializers"
+	"alumniportal.com/shared/models"
 	sharedModels "alumniportal.com/shared/models"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -72,20 +72,33 @@ func CreatePassRequest(c *gin.Context) {
 
 func DeletePassRequest(c *gin.Context) {
 	var passRequest models.PassRequest
-	if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), models.Unverified).First(&passRequest).Error; err != nil {
-		logrus.WithFields(logrus.Fields{
-			"request_id": c.Param("id"),
-			"error":      err.Error(),
-		}).Error("Pass request not found or already accepted/declined for DeletePassRequest")
-		c.JSON(http.StatusNotFound, gin.H{"error": "Pass request not found or already accepted/declined"})
-		return
-	}
 
 	user, exists := c.Get("user")
+
 	if !exists {
 		logrus.Warn("User not authenticated for DeletePassRequest")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
+	}
+
+	if user.(sharedModels.User).IsAdmin == true {
+		if err := initializers.DB.Where("id = ?", c.Param("id")).First(&passRequest).Error; err != nil {
+			logrus.WithFields(logrus.Fields{
+				"request_id": c.Param("id"),
+				"error":      err.Error(),
+			}).Error("Pass request not found for DeletePassRequest")
+			c.JSON(http.StatusNotFound, gin.H{"error": "Pass request not found"})
+			return
+		}
+	} else {
+		if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), models.Unverified).First(&passRequest).Error; err != nil {
+			logrus.WithFields(logrus.Fields{
+				"request_id": c.Param("id"),
+				"error":      err.Error(),
+			}).Error("Pass request not found or already accepted/declined for DeletePassRequest")
+			c.JSON(http.StatusNotFound, gin.H{"error": "Pass request not found or already accepted/declined"})
+			return
+		}
 	}
 
 	if passRequest.UserID != user.(sharedModels.User).ID && user.(sharedModels.User).IsAdmin == false {
@@ -220,7 +233,7 @@ func updatePassRequestStatus(c *gin.Context, status models.PassRequestStatus) {
 func GetCurrentUserRequests(c *gin.Context) {
 	user, _ := c.Get("user")
 	var passRequests []models.PassRequest
-	if err := initializers.DB.Where("user_id = ?", user.(sharedModels.User).ID).Find(&passRequests).Error; err != nil {
+	if err := initializers.DB.Where("user_id = ?", user.(sharedModels.User).ID).Preload("User").Find(&passRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"user_id": user.(sharedModels.User).ID,
 			"error":   err.Error(),
@@ -238,7 +251,8 @@ func GetCurrentUserRequests(c *gin.Context) {
 
 func GetUnverifiedRequests(c *gin.Context) {
 	var passRequests []models.PassRequest
-	if err := initializers.DB.Where("status = ?", models.Unverified).Find(&passRequests).Error; err != nil {
+
+	if err := initializers.DB.Where("status = ?", models.Unverified).Preload("User").Find(&passRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
 		}).Error("Failed to get unverified pass requests")
@@ -255,7 +269,7 @@ func GetUnverifiedRequests(c *gin.Context) {
 func GetAdminPassRequest(c *gin.Context) {
 	var passRequest models.PassRequest
 
-	if err := initializers.DB.Where("status = ? AND id = ?", models.Unverified, c.Param("id")).First(&passRequest).Error; err != nil {
+	if err := initializers.DB.Where("status = ? AND id = ?", models.Unverified, c.Param("id")).Preload("User").First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"request_id": c.Param("id"),
 			"error":      err.Error(),
@@ -275,7 +289,7 @@ func GetPassRequest(c *gin.Context) {
 
 	user, _ := c.Get("user")
 
-	if err := initializers.DB.Where("id = ? AND user_id = ?", c.Param("id"), user.(sharedModels.User).ID).First(&passRequest).Error; err != nil {
+	if err := initializers.DB.Where("id = ? AND user_id = ?", c.Param("id"), user.(sharedModels.User).ID).Preload("User").First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"user_id":    user.(sharedModels.User).ID,
 			"request_id": c.Param("id"),
