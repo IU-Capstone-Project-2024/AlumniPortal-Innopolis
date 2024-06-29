@@ -1,16 +1,19 @@
-import json
 import logging
-import requests
+import os
 import time
 from getpass import getpass
+
+import requests
+from dotenv import load_dotenv
 from telethon import TelegramClient, errors
 from telethon.tl.functions.messages import CreateChatRequest
 
-# Укажите здесь ваши параметры API и данные пользователя
-api_id = 'api_id'
-api_hash = 'api_hash'
-phone_number = 'phone_number'
-data_url = 'https://09b9ce47-c21b-436d-8c15-0fd9b65b36ea.mock.pstmn.io/api/chat-data'
+load_dotenv()
+# Укажите в .env ваши параметры API и данные пользователя
+api_id = os.getenv("API_ID")
+api_hash = os.getenv("API_HASH")
+phone_number = os.getenv("PHONE")
+data_url = os.getenv("DATA_URL")
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
