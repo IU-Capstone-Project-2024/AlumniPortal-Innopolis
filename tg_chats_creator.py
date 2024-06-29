@@ -7,10 +7,10 @@ from telethon import TelegramClient, errors
 from telethon.tl.functions.messages import CreateChatRequest
 
 # Укажите здесь ваши параметры API и данные пользователя
-api_id = '27007150'
-api_hash = '3db17b4032beef04ef4ca239734014aa'
-phone_number = '+79166133300'  # Замените на ваш телефонный номер в международном формате
-data_url = 'https://09b9ce47-c21b-436d-8c15-0fd9b65b36ea.mock.pstmn.io/api/chat-data'  # Замените на URL вашего веб-сервиса
+api_id = 'api_id'
+api_hash = 'api_hash'
+phone_number = 'phone_number'
+data_url = 'https://09b9ce47-c21b-436d-8c15-0fd9b65b36ea.mock.pstmn.io/api/chat-data'
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
