@@ -2,7 +2,7 @@ package user
 
 import (
 	"AuthService/controllers"
-	"AuthService/middleware"
+	"alumniportal.com/shared/middleware"
 	"github.com/gin-gonic/gin"
 )
 

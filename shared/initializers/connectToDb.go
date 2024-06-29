@@ -1,6 +1,7 @@
 package initializers
 
 import (
+	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"os"
@@ -16,4 +17,6 @@ func ConnectToDb() {
 	if err != nil {
 		panic("Fail to connect to DB")
 	}
+
+	logrus.Info("DB connection established!")
 }

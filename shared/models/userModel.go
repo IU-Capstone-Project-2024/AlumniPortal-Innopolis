@@ -5,7 +5,6 @@ import "gorm.io/gorm"
 type User struct {
 	gorm.Model
 	Name             string `gorm:"not null"`
-	Surname          string
 	Role             string
 	Specialization   string
 	AvailableCustdev bool `gorm:"default:false"`
@@ -16,4 +15,6 @@ type User struct {
 	SocialsLink      string
 	Email            string `gorm:"unique"`
 	Password         string
+	IsAdmin          bool `gorm:"default:false"`
+	IsAlumni         bool `gorm:"default:false"`
 }

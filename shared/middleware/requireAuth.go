@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"AuthService/initializers"
-	"AuthService/models"
+	"alumniportal.com/shared/initializers"
+	"alumniportal.com/shared/models"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,44 +10,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"github.com/sirupsen/logrus"
 )
-
-var body struct {
-	Name     string
-	LastName string
-	Surname  string
-	Email    string
-	Password string
-}
-
-func RequireVerify(c *gin.Context) {
-	user, exists := c.Get("user")
-	if exists == false {
-		c.AbortWithStatus(http.StatusUnauthorized)
-		return
-	}
-
-	// TODO: Add RequireAuth + user.verified == true (from DB using ID)
-
-	/*
-		var temp models.User = initializers.DB.First(&user, claims["sub"])
-		if temp.ID == 0 {
-			c.AbortWithStatus(http.StatusUnauthorized)
-			return
-		}
-		if user.Verified == True && temp.Verified == True {
-			C.Next()
-		}
-		c.AbortWithStatus(http.StatusNotAcceptable)
-		return
-	*/
-
-}
 
 func RequireAuth(c *gin.Context) {
 	tokenString, err := c.Cookie("Authorization")
 
 	if err != nil {
+		logrus.WithError(err).Warn("Failed to retrieve Authorization cookie")
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
@@ -61,31 +31,33 @@ func RequireAuth(c *gin.Context) {
 	})
 
 	if token == nil {
+		logrus.Warn("Invalid token")
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
 	if err != nil {
+		logrus.WithError(err).Warn("Failed to parse JWT token")
 		c.AbortWithStatus(http.StatusUnauthorized)
 		return
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		if float64(time.Now().Unix()) >= claims["exp"].(float64) {
+			logrus.Warn("Expired token")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		var user models.User
 
-		initializers.DB.First(&user, claims["sub"])
-		if user.ID == 0 {
+		if err := initializers.DB.First(&user, claims["sub"]).Error; err != nil {
+			logrus.WithField("user_id", claims["sub"]).WithError(err).Warn("User not found in database")
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 
 		c.Set("user", user)
-
 	}
 
 	c.Next()
