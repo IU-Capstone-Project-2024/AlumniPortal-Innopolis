@@ -20,7 +20,7 @@ var body struct {
 }
 
 func Signup(c *gin.Context) {
-	if c.Bind(&body) != nil {
+	if c.ShouldBindJSON(&body) != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": "Failed to read body",
 		}).Error("Signup error")
