@@ -251,7 +251,7 @@ func GetCurrentUserRequests(c *gin.Context) {
 
 func GetUnverifiedRequests(c *gin.Context) {
 	var passRequests []sharedModels.PassRequest
-
+  
 	if err := initializers.DB.Where("status = ?", helpers.Unverified).Preload("User").Find(&passRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),

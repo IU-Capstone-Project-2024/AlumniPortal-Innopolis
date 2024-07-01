@@ -255,7 +255,7 @@ func GetCurrentUserProjects(c *gin.Context) {
 
 func GetUnverifiedProjects(c *gin.Context) {
 	var projects []sharedModels.Project
-
+  
 	if err := initializers.DB.Where("status = ?", helpers.Unverified).Preload("User").Find(&projects).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
