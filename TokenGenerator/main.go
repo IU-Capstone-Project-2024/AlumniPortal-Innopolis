@@ -11,7 +11,7 @@ func generateToken() (string, error) {
 	if _, err := rand.Read(bytes); err != nil {
 		return "", err
 	}
-	return hex.EncodeToString(bytes), nil
+	return hex.EncodeToString(bytes) + "==AlumniAPI", nil
 }
 
 func main() {

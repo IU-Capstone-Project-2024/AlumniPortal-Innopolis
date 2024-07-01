@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
 	sharedModels "alumniportal.com/shared/models"
 	"github.com/gin-gonic/gin"
@@ -51,7 +52,7 @@ func CreatePassRequest(c *gin.Context) {
 		PassExpirationDate: expirationDate,
 		Message:            input.Message,
 		PassType:           sharedModels.PassType(input.PassType),
-		Status:             sharedModels.Unverified,
+		Status:             helpers.Unverified,
 	}
 
 	if err := initializers.DB.Create(&passRequest).Error; err != nil {
@@ -194,14 +195,14 @@ func UpdatePassRequest(c *gin.Context) {
 }
 
 func ApprovePassRequest(c *gin.Context) {
-	updatePassRequestStatus(c, sharedModels.Accepted)
+	updatePassRequestStatus(c, helpers.Accepted)
 }
 
 func DeclinePassRequest(c *gin.Context) {
-	updatePassRequestStatus(c, sharedModels.Declined)
+	updatePassRequestStatus(c, helpers.Declined)
 }
 
-func updatePassRequestStatus(c *gin.Context, status sharedModels.PassRequestStatus) {
+func updatePassRequestStatus(c *gin.Context, status helpers.VerificationStatus) {
 	var passRequest sharedModels.PassRequest
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{

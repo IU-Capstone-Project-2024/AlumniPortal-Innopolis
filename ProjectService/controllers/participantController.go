@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
 	sharedModels "alumniportal.com/shared/models"
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,8 @@ import (
 )
 
 type ParticipantInput struct {
-	ProjectID uint
+	TargetID  uint `json:"target" binding:"required"`
+	IsProject bool `json:"is_project" binding:"required"`
 }
 
 func AddParticipant(c *gin.Context) {
@@ -23,13 +25,24 @@ func AddParticipant(c *gin.Context) {
 	}
 
 	user, _ := c.Get("user")
-	projectParticipant := sharedModels.ProjectParticipant{
-		UserID:    user.(sharedModels.User).ID,
-		ProjectID: input.ProjectID,
-		Status:    sharedModels.UnverifiedProject,
+	var participant sharedModels.Participant
+	if input.IsProject {
+		participant = sharedModels.Participant{
+			UserID:    user.(sharedModels.User).ID,
+			ProjectID: input.TargetID,
+			Status:    helpers.Unverified,
+			IsProject: true,
+		}
+	} else {
+		participant = sharedModels.Participant{
+			UserID:    user.(sharedModels.User).ID,
+			EventID:   input.TargetID,
+			Status:    helpers.Unverified,
+			IsProject: false,
+		}
 	}
 
-	if err := initializers.DB.Create(&projectParticipant).Error; err != nil {
+	if err := initializers.DB.Create(&participant).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
 		}).Error("Failed to add participant")
@@ -37,16 +50,26 @@ func AddParticipant(c *gin.Context) {
 		return
 	}
 
-	logrus.WithFields(logrus.Fields{
-		"user_id":    user.(sharedModels.User).ID,
-		"project_id": projectParticipant.ProjectID,
-		"add_id":     projectParticipant.ID,
-	}).Info("Participant added successfully")
-	c.JSON(http.StatusOK, projectParticipant)
+	if participant.IsProject {
+		logrus.WithFields(logrus.Fields{
+			"user_id":    user.(sharedModels.User).ID,
+			"project_id": participant.ProjectID,
+			"add_id":     participant.ID,
+		}).Info("Participant added successfully")
+		c.JSON(http.StatusOK, participant)
+	} else {
+		logrus.WithFields(logrus.Fields{
+			"user_id":  user.(sharedModels.User).ID,
+			"event_id": participant.ProjectID,
+			"add_id":   participant.ID,
+		}).Info("Participant added successfully")
+		c.JSON(http.StatusOK, participant)
+	}
+
 }
 
 func RemoveParticipant(c *gin.Context) {
-	var participant sharedModels.ProjectParticipant
+	var participant sharedModels.Participant
 
 	user, exists := c.Get("user")
 
@@ -96,4 +119,40 @@ func RemoveParticipant(c *gin.Context) {
 		"project_id": participant.ProjectID,
 	}).Info("Participation cancelled successfully")
 	c.JSON(http.StatusOK, gin.H{"data": true})
+}
+
+func ApproveParticipant(c *gin.Context) {
+	updateParticipantStatus(c, helpers.Accepted)
+}
+
+func DeclineParticipant(c *gin.Context) {
+	updateParticipantStatus(c, helpers.Declined)
+}
+
+func updateParticipantStatus(c *gin.Context, status helpers.VerificationStatus) {
+	var participant sharedModels.Participant
+	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&participant).Error; err != nil {
+		logrus.WithFields(logrus.Fields{
+			"participant_id": c.Param("id"),
+			"error":          err.Error(),
+		}).Error("Participant not found for updating status")
+		c.JSON(http.StatusNotFound, gin.H{"error": "Participant not found"})
+		return
+	}
+
+	participant.Status = status
+	if err := initializers.DB.Save(&participant).Error; err != nil {
+		logrus.WithFields(logrus.Fields{
+			"participant_id": participant.ID,
+			"error":          err.Error(),
+		}).Error("Failed to update participant status")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"participant_id": participant.ID,
+		"status":         status,
+	}).Info("Participant status updated successfully")
+	c.JSON(http.StatusOK, participant)
 }

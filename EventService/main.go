@@ -1,8 +1,8 @@
-package ProjectService
+package EventService
 
 import (
-	"ProjectService/routes/admin"
-	"ProjectService/routes/user"
+	"EventService/routes/admin"
+	"EventService/routes/user"
 	"alumniportal.com/shared/initializers"
 	"alumniportal.com/shared/middleware"
 	"github.com/gin-contrib/cors"
@@ -35,10 +35,10 @@ func main() {
 	user.SetupRouter(r)
 	admin.SetupRouter(r)
 
-	err := r.Run(":9091")
+	err := r.Run(":9092")
 
 	if err != nil {
-		panic("Error starting ProjectService")
+		panic("Error starting Event Service")
 	}
-	logrus.Info("ProjectService successfully started!")
+	logrus.Info("Event Service successfully started!")
 }
