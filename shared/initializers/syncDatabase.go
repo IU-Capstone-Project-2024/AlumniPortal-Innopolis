@@ -15,6 +15,12 @@ func SyncDatabase() {
 	if DB.AutoMigrate(&models.Project{}) != nil {
 		panic("Database models.Project migration failed")
 	}
+	if DB.AutoMigrate(&models.Participant{}) != nil {
+		panic("Database models.Participant migration failed")
+	}
+	if DB.AutoMigrate(&models.Event{}) != nil {
+		panic("Database models.Event migration failed")
+	}
 
 	logrus.Info("Database models.User migration completed!")
 }

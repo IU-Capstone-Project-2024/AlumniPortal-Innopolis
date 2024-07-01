@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
 	sharedModels "alumniportal.com/shared/models"
 	"github.com/gin-gonic/gin"
@@ -28,7 +29,7 @@ func CreateProject(c *gin.Context) {
 		FounderID:   user.(sharedModels.User).ID,
 		Name:        input.Name,
 		Description: input.Description,
-		Status:      sharedModels.UnverifiedProject,
+		Status:      helpers.Unverified,
 	}
 
 	if err := initializers.DB.Create(&projectRequest).Error; err != nil {
@@ -52,7 +53,7 @@ func DeleteProject(c *gin.Context) {
 	user, exists := c.Get("user")
 
 	if !exists {
-		logrus.Warn("User not authenticated for DeleteProject")
+		logrus.Warn("User not authenticated for project removal")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
@@ -62,12 +63,12 @@ func DeleteProject(c *gin.Context) {
 			logrus.WithFields(logrus.Fields{
 				"project_id": c.Param("id"),
 				"error":      err.Error(),
-			}).Error("Project not found for DeleteProject")
+			}).Error("Project not found for project removal")
 			c.JSON(http.StatusNotFound, gin.H{"error": "Project not found"})
 			return
 		}
 	} else {
-		if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), sharedModels.UnverifiedProject).First(&project).Error; err != nil {
+		if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), helpers.Unverified).First(&project).Error; err != nil {
 			logrus.WithFields(logrus.Fields{
 				"project_id": c.Param("id"),
 				"error":      err.Error(),
@@ -96,7 +97,7 @@ func DeleteProject(c *gin.Context) {
 
 func UpdateProject(c *gin.Context) {
 	var project sharedModels.Project
-	if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), sharedModels.UnverifiedProject).First(&project).Error; err != nil {
+	if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), helpers.Unverified).First(&project).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"project_id": c.Param("id"),
 			"error":      err.Error(),
@@ -150,15 +151,62 @@ func UpdateProject(c *gin.Context) {
 	c.JSON(http.StatusOK, project)
 }
 
+func UpdateProjectAdmin(c *gin.Context) {
+	var project sharedModels.Project
+	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&project).Error; err != nil {
+		logrus.WithFields(logrus.Fields{
+			"project_id": c.Param("id"),
+			"error":      err.Error(),
+		}).Error("Project not found for updating")
+		c.JSON(http.StatusNotFound, gin.H{"error": "Project not found"})
+		return
+	}
+
+	user, exists := c.Get("user")
+	if !exists {
+		logrus.Warn("User not authenticated for project update")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	var input ProjectInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		logrus.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error("Failed to bind JSON for project update")
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updateData := sharedModels.Project{
+		Name:        input.Name,
+		Description: input.Description,
+	}
+
+	if err := initializers.DB.Model(&project).Updates(updateData).Error; err != nil {
+		logrus.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error("Failed to update project")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"user_id":    user.(sharedModels.User).ID,
+		"project_id": project.ID,
+	}).Info("Project updated successfully by admin")
+	c.JSON(http.StatusOK, project)
+}
+
 func ApproveProject(c *gin.Context) {
-	updatePassRequestVerificationStatus(c, sharedModels.AcceptedProject)
+	updateProjectVerificationStatus(c, helpers.Accepted)
 }
 
 func DeclineProject(c *gin.Context) {
-	updatePassRequestVerificationStatus(c, sharedModels.DeclinedProject)
+	updateProjectVerificationStatus(c, helpers.Declined)
 }
 
-func updatePassRequestVerificationStatus(c *gin.Context, status sharedModels.ProjectVerificationStatus) {
+func updateProjectVerificationStatus(c *gin.Context, status helpers.VerificationStatus) {
 	var project sharedModels.Project
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&project).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -207,8 +255,8 @@ func GetCurrentUserProjects(c *gin.Context) {
 
 func GetUnverifiedProjects(c *gin.Context) {
 	var projects []sharedModels.Project
-
-	if err := initializers.DB.Where("status = ?", sharedModels.UnverifiedProject).Preload("User").Find(&projects).Error; err != nil {
+  
+	if err := initializers.DB.Where("status = ?", helpers.Unverified).Preload("User").Find(&projects).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
 		}).Error("Failed to get unverified projects")
@@ -222,10 +270,10 @@ func GetUnverifiedProjects(c *gin.Context) {
 	c.JSON(http.StatusOK, projects)
 }
 
-func GetAdminProject(c *gin.Context) {
+func GetProjectAdmin(c *gin.Context) {
 	var project sharedModels.Project
 
-	if err := initializers.DB.Where("status = ? AND id = ?", sharedModels.UnverifiedProject, c.Param("id")).Preload("User").First(&project).Error; err != nil {
+	if err := initializers.DB.Where("status = ? AND id = ?", helpers.Unverified, c.Param("id")).Preload("User").First(&project).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"project_id": c.Param("id"),
 			"error":      err.Error(),

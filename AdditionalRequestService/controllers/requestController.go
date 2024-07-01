@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
 	sharedModels "alumniportal.com/shared/models"
 	"github.com/gin-gonic/gin"
@@ -51,7 +52,7 @@ func CreatePassRequest(c *gin.Context) {
 		PassExpirationDate: expirationDate,
 		Message:            input.Message,
 		PassType:           sharedModels.PassType(input.PassType),
-		Status:             sharedModels.Unverified,
+		Status:             helpers.Unverified,
 	}
 
 	if err := initializers.DB.Create(&passRequest).Error; err != nil {
@@ -90,7 +91,7 @@ func DeletePassRequest(c *gin.Context) {
 			return
 		}
 	} else {
-		if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), sharedModels.Unverified).First(&passRequest).Error; err != nil {
+		if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), helpers.Unverified).First(&passRequest).Error; err != nil {
 			logrus.WithFields(logrus.Fields{
 				"request_id": c.Param("id"),
 				"error":      err.Error(),
@@ -119,7 +120,7 @@ func DeletePassRequest(c *gin.Context) {
 
 func UpdatePassRequest(c *gin.Context) {
 	var passRequest sharedModels.PassRequest
-	if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), sharedModels.Unverified).First(&passRequest).Error; err != nil {
+	if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), helpers.Unverified).First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"request_id": c.Param("id"),
 			"error":      err.Error(),
@@ -194,14 +195,14 @@ func UpdatePassRequest(c *gin.Context) {
 }
 
 func ApprovePassRequest(c *gin.Context) {
-	updatePassRequestStatus(c, sharedModels.Accepted)
+	updatePassRequestStatus(c, helpers.Accepted)
 }
 
 func DeclinePassRequest(c *gin.Context) {
-	updatePassRequestStatus(c, sharedModels.Declined)
+	updatePassRequestStatus(c, helpers.Declined)
 }
 
-func updatePassRequestStatus(c *gin.Context, status sharedModels.PassRequestStatus) {
+func updatePassRequestStatus(c *gin.Context, status helpers.VerificationStatus) {
 	var passRequest sharedModels.PassRequest
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -250,8 +251,8 @@ func GetCurrentUserRequests(c *gin.Context) {
 
 func GetUnverifiedRequests(c *gin.Context) {
 	var passRequests []sharedModels.PassRequest
-
-	if err := initializers.DB.Where("status = ?", sharedModels.Unverified).Preload("User").Find(&passRequests).Error; err != nil {
+  
+	if err := initializers.DB.Where("status = ?", helpers.Unverified).Preload("User").Find(&passRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
 		}).Error("Failed to get unverified pass requests")
@@ -268,7 +269,7 @@ func GetUnverifiedRequests(c *gin.Context) {
 func GetAdminPassRequest(c *gin.Context) {
 	var passRequest sharedModels.PassRequest
 
-	if err := initializers.DB.Where("status = ? AND id = ?", sharedModels.Unverified, c.Param("id")).Preload("User").First(&passRequest).Error; err != nil {
+	if err := initializers.DB.Where("status = ? AND id = ?", helpers.Unverified, c.Param("id")).Preload("User").First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"request_id": c.Param("id"),
 			"error":      err.Error(),
