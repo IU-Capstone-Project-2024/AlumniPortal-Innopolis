@@ -91,7 +91,7 @@ func DeletePassRequest(c *gin.Context) {
 			return
 		}
 	} else {
-		if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), sharedModels.Unverified).First(&passRequest).Error; err != nil {
+		if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), helpers.Unverified).First(&passRequest).Error; err != nil {
 			logrus.WithFields(logrus.Fields{
 				"request_id": c.Param("id"),
 				"error":      err.Error(),
@@ -120,7 +120,7 @@ func DeletePassRequest(c *gin.Context) {
 
 func UpdatePassRequest(c *gin.Context) {
 	var passRequest sharedModels.PassRequest
-	if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), sharedModels.Unverified).First(&passRequest).Error; err != nil {
+	if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), helpers.Unverified).First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"request_id": c.Param("id"),
 			"error":      err.Error(),
@@ -252,7 +252,7 @@ func GetCurrentUserRequests(c *gin.Context) {
 func GetUnverifiedRequests(c *gin.Context) {
 	var passRequests []sharedModels.PassRequest
 
-	if err := initializers.DB.Where("status = ?", sharedModels.Unverified).Preload("User").Find(&passRequests).Error; err != nil {
+	if err := initializers.DB.Where("status = ?", helpers.Unverified).Preload("User").Find(&passRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
 		}).Error("Failed to get unverified pass requests")
@@ -269,7 +269,7 @@ func GetUnverifiedRequests(c *gin.Context) {
 func GetAdminPassRequest(c *gin.Context) {
 	var passRequest sharedModels.PassRequest
 
-	if err := initializers.DB.Where("status = ? AND id = ?", sharedModels.Unverified, c.Param("id")).Preload("User").First(&passRequest).Error; err != nil {
+	if err := initializers.DB.Where("status = ? AND id = ?", helpers.Unverified, c.Param("id")).Preload("User").First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"request_id": c.Param("id"),
 			"error":      err.Error(),
