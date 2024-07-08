@@ -1,6 +1,3 @@
 <template>
-    <div>
-        <Alert />
-        <Profile />
-    </div>
+    <div>main page</div>
 </template>
