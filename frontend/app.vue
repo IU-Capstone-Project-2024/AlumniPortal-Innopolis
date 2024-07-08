@@ -2,7 +2,7 @@
   <div>
     <NuxtLayout>
       <Header />
-      <NuxtPage/>
+      <NuxtPage />
     </NuxtLayout>
   </div>
 </template>
