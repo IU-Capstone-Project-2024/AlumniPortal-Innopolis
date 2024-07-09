@@ -9,11 +9,12 @@ export default {
     "./error.vue",
   ],
   theme: {
-    extend: {},
-    fontFamily: {
-      'sans': ['Montserrat, Arial, sans-serif'],
-      'link': ['"IBM Plex Mono"'],
-    }
+    extend: {
+      fontFamily: {
+        montserrat: ['Montserrat', 'sans-serif'],
+      },
+    },
+    
   },
   plugins: [],
 }

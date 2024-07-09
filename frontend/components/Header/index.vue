@@ -1,5 +1,5 @@
 <template>
-    <div class="header flex items-center h-15 justify-between p-6 bg-white bg-opacity-20 absolute top-0 left-0 w-screen">
+    <div class="header flex items-center h-15 justify-between p-6 bg-white bg-opacity-20 absolute top-0 left-0 w-screen z-10">
         <HeaderLogo />
         <ul class="flex gap-4">
             <li>
