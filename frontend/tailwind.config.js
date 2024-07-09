@@ -12,6 +12,7 @@ export default {
     extend: {
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
+        ibm: ['"IBM Plex Mono"', 'sans-serif']
       },
     },
     
