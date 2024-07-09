@@ -1,13 +1,27 @@
 version: '3.7'
 
 services:
+  traefik:
+    image: traefik:v2.6
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
   auth-service:
     build:
       context: ./AdditionalRequestService
-    ports:
-      - "8080:8080"
-    depends_on:
-      - logstash
+    volumes:
+      - ../shared:/app/shared
+    labels:
+      - "traefik.http.routers.service1.rule=PathPrefix(``)"
+    networks:
+      - web
     logging:
       driver: "json-file"
       options:
@@ -17,51 +31,70 @@ services:
   requests-service:
     build:
       context: ./AuthService
-    ports:
-      - "8081:8081"
-    depends_on:
-      - logstash
+    volumes:
+      - ../shared:/app/shared
+    labels:
+      - "traefik.http.routers.service1.rule=PathPrefix(`/requests`)"
+    networks:
+      - web
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "10"
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elk
+
   logstash:
-    image: docker.elastic.co/logstash/logstash:7.13.3
+    image: docker.elastic.co/logstash/logstash:7.13.4
     container_name: logstash
     volumes:
       - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
     ports:
-      - "5044:5044"
-    depends_on:
-      - elasticsearch
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.3
-    container_name: elasticsearch
-    environment:
-      - node.name=elasticsearch
-      - discovery.type=single-node
-      - cluster.name=docker-cluster
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - ELASTIC_PASSWORD=testpassword
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-    volumes:
-      - esdata:/usr/share/elasticsearch/data
+      - "5000:5000"
+      - "9600:9600"
+    networks:
+      - elk
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.13.3
+    image: docker.elastic.co/kibana/kibana:7.13.4
     container_name: kibana
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
     ports:
       - "5601:5601"
     depends_on:
       - elasticsearch
+    networks:
+      - elk
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.13.4
+    container_name: filebeat
+    volumes:
+      - ./elk/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - elasticsearch
+      - logstash
+    networks:
+      - elk
+
+networks:
+  web:
+    external: true
+  elk:
+    driver: bridge
 
 volumes:
   esdata:
