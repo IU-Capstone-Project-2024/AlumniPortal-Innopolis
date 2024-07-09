@@ -10,6 +10,10 @@ export default {
   ],
   theme: {
     extend: {},
+    fontFamily: {
+      'sans': ['Montserrat, Arial, sans-serif'],
+      'link': ['"IBM Plex Mono"'],
+    }
   },
   plugins: [],
 }

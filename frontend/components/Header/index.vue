@@ -3,22 +3,22 @@
         <HeaderLogo />
         <ul class="flex gap-4">
             <li>
-                <NuxtLink to="/">Home</NuxtLink>
+                <NuxtLink class="hover:text-slate-800" to="/">Home</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="/projects">Projects</NuxtLink>
+                <NuxtLink class="hover:text-slate-800" to="/projects">Projects</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="/volunteer">Volunteer</NuxtLink>
+                <NuxtLink class="hover:text-slate-800" to="/volunteer">Volunteer</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="/user">User Info</NuxtLink>
+                <NuxtLink class="hover:text-slate-800" to="/user">User Info</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="/offers">Offers</NuxtLink>
+                <NuxtLink class="hover:text-slate-800" to="/offers">Offers</NuxtLink>
             </li>
             <li>
-                <NuxtLink to="/donate">Donate</NuxtLink>
+                <NuxtLink class="hover:text-slate-800" to="/donate">Donate</NuxtLink>
             </li>
         </ul>
     </div>
@@ -29,5 +29,6 @@
 </script>
 
 <style lang="sass" scoped>
-
+.router-link-exact-active
+    font-weight: bold
 </style>
