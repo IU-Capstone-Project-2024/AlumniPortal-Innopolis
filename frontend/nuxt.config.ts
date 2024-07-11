@@ -3,6 +3,11 @@ import { resolve } from 'path'
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
+  modules: ['@formkit/nuxt'],
+  formkit: {
+    autoImport: true,
+    configFile: './formkit.config.ts',
+  },
   alias: {
     '@': resolve(__dirname, '/')
   },

@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@formkit/nuxt": "^1.6.5",
     "nuxt": "^3.12.3",
     "sass": "^1.77.6",
     "vue": "latest"
