@@ -3,7 +3,17 @@ import { resolve } from 'path'
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@formkit/nuxt'],
+  modules: ['@formkit/nuxt', '@nuxtjs/color-mode'],
+  colorMode: {
+    preference: 'system',
+    fallback: 'light',
+    hid: 'nuxt-color-mode-script',
+    globalName: '__NUXT_COLOR_MODE__',
+    componentName: 'ColorScheme',
+    classPrefix: '',
+    classSuffix: '-mode',
+    storageKey: 'nuxt-color-mode'
+  },
   formkit: {
     autoImport: true,
     configFile: './formkit.config.ts',

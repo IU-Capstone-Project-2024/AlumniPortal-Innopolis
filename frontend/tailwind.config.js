@@ -14,7 +14,7 @@ export default {
       fontFamily: {
         montserrat: ['Montserrat', 'sans-serif'],
         ibm: ['"IBM Plex Mono"', 'sans-serif']
-      },
+      }
     },
     
   },
