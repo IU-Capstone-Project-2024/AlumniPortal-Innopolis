@@ -5,7 +5,7 @@
         type="form" 
         class="space-y-6" 
         submit-label="Register" 
-        @submit="submitHandler" 
+        @submit="submitHandler"
         :actions="false"
       >
         <h2 class="text-3xl font-bold text-center" style="color: #40BA21">Sign in</h2>
@@ -28,6 +28,12 @@
           placeholder="Password"
           input-class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
           label-class="block text-sm font-medium text-gray-700" 
+        />
+        <FormKit
+            type="checkbox"
+            label="Remember me"
+            name="remember"
+            :value="false"
         />
         <button 
           type="submit" 
