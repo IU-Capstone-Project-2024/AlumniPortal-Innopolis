@@ -14,6 +14,5 @@ func SetupRouter(route *gin.Engine) {
 		alumni.POST("", controllers.CreateDonationRequest)
 		alumni.GET("", controllers.GetCurrentUserDonationRequests)
 		alumni.GET("/:id", controllers.GetDonationRequest)
-		alumni.DELETE("/:id", controllers.DeleteDonationRequest)
 	}
 }

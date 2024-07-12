@@ -53,40 +53,6 @@ func CreateDonationRequest(c *gin.Context) {
 	}).Info("Donation request created successfully")
 	c.JSON(http.StatusOK, donationRequest)
 }
-func DeleteDonationRequest(c *gin.Context) {
-	var donationRequset sharedModels.Donation
-
-	user, exists := c.Get("user")
-
-	if !exists {
-		logrus.Warn("User not authetificated for DeleteDonationRequest")
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authentificated"})
-		return
-	}
-	if user.(sharedModels.User).IsAlumni == false {
-		logrus.WithFields(logrus.Fields{
-			"user_id":         user.(sharedModels.User).ID,
-			"donation_req_id": donationRequset.ID,
-		}).Warn("Impossible to delete donation request")
-		c.JSON(http.StatusForbidden, gin.H{"error": "User is not the owner of this donation request"})
-		return
-	}
-
-	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&donationRequset).Error; err != nil {
-		logrus.WithFields(logrus.Fields{
-			"request_id": c.Param("id"),
-			"error":      err.Error(),
-		}).Error("Donation not found for DeleteDonationRequest")
-		c.JSON(http.StatusNotFound, gin.H{"error": "Donation request not found"})
-		return
-	}
-	initializers.DB.Delete(&donationRequset)
-	logrus.WithFields(logrus.Fields{
-		"user_id":         user.(sharedModels.User).ID,
-		"donation_req_id": donationRequset.ID,
-	}).Info("Donation request deleted successfully")
-	c.JSON(http.StatusOK, gin.H{"data": true})
-}
 
 func GetCurrentUserDonationRequests(c *gin.Context) {
 	var donationRequests []sharedModels.Donation
