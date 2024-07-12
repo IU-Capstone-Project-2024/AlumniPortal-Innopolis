@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package filteringservice;
+
+service FilteringService {
+  rpc GradeDescription (GradeRequest) returns (GradeResponse);
+}
+
+message GradeRequest {
+  string description = 1;
+  bool is_project = 2;
+}
+
+message GradeResponse {
+  int32 grade = 1;
+  string error = 2;
+}
