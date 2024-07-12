@@ -1,6 +1,6 @@
 <template>
     <div class="bg-[url(~/assets/inno.png)] bg-cover w-screen h-screen flex items-center justify-center">
-        <div class="wrapper bg-white p-10 rounded-lg shadow-lg">
+        <div class="wrapper bg-white p-7 rounded-lg shadow-lg">
             <FormKit type="form" class="space-y-6" submit-label="Sign Up" @submit="submitHandler" :actions="false"
                 #default="{ value }">
                 <h2 class="text-3xl font-bold text-center" style="color: #40BA21">Sign up</h2>
