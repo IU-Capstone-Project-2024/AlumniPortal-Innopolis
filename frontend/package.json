@@ -13,7 +13,8 @@
     "@formkit/nuxt": "^1.6.5",
     "nuxt": "^3.12.3",
     "sass": "^1.77.6",
-    "vue": "latest"
+    "vue": "latest",
+    "vuetify": "^3.6.12"
   },
   "devDependencies": {
     "@nuxtjs/color-mode": "^3.4.2",

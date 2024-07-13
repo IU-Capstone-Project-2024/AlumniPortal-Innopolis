@@ -42,15 +42,10 @@
         >
           Sign in
         </button>
-        <button 
-          type="button" 
+        <UIButton  
           @click="navigateToSignUp"
-          class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-          style="background-color: #40BA21"
-        >
-          Register
-        </button>
-        
+          text="Register"
+         /> 
       </FormKit>
     </div>
   </div>
