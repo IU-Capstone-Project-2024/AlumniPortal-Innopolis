@@ -18,9 +18,6 @@
             <li v-if="route.name != 'sign-in' && route.name != 'sign-up'">
                 <NuxtLink class="hover:text-[#40BA21] font-ibm dark:text-white" to="/offers">Offers</NuxtLink>
             </li>
-            <li v-if="route.name != 'sign-in' && route.name != 'sign-up'">
-                <NuxtLink class="hover:text-[#40BA21] font-ibm dark:text-white" to="/donate">Donate</NuxtLink>
-            </li>
             <li>
                 <NuxtLink class="hover:text-[#40BA21] font-ibm dark:text-white" to="/sign-in">Sign In</NuxtLink>
             </li>

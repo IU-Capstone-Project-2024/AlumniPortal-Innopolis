@@ -7,7 +7,6 @@
 
 <script setup>
 const colorMode = useColorMode()
-console.log(colorMode.value)
 </script>
 
 <style lang="sass" scoped>
