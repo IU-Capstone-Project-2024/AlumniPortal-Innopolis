@@ -13,7 +13,7 @@
                 <NuxtLink class="hover:text-[#40BA21] font-ibm dark:text-white" to="/volunteer">Volunteer</NuxtLink>
             </li>
             <li v-if="route.name != 'sign-in' && route.name != 'sign-up'">
-                <NuxtLink class="hover:text-[#40BA21] font-ibm dark:text-white" to="/user">User Info</NuxtLink>
+                <NuxtLink class="hover:text-[#40BA21] font-ibm dark:text-white" to="/user">Profile</NuxtLink>
             </li>
             <li v-if="route.name != 'sign-in' && route.name != 'sign-up'">
                 <NuxtLink class="hover:text-[#40BA21] font-ibm dark:text-white" to="/offers">Offers</NuxtLink>
