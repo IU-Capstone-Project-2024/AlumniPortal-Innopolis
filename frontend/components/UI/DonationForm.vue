@@ -7,7 +7,7 @@
         @submit="submitHandler"
         :actions="false"
       >
-        <h2 class="text-3xl font-bold font-montserrat text-center" style="color: #40BA21">Make a Donation</h2>
+        <h2 class="text-3xl font-bold mb-1 font-montserrat text-center" style="color: #40BA21">Make a Donation</h2>
         <FormKit 
           type="text" 
           name="firstName" 
@@ -59,25 +59,25 @@
           label-class="block font-ibm text-sm font-medium text-gray-700" 
         />
         <div>
-          <span class="block text-sm mb-1 font-medium font-montserrat text-gray-700">Choose the payment method</span>
+          <span class="block text-sm mb-2 italic font-medium font-montserrat text-gray-700">Choose the payment method</span>
           <FormKit 
             type="radio" 
             name="paymentMethod" 
             v-model="form.paymentMethod" 
             :options="paymentMethods"
             input-class="mr-2"
-            label-class="text-sm font-ibm font-medium text-gray-700"
+            label-class="text-sm mb-1 font-ibm font-medium text-gray-700"
           />
         </div>
         <div>
-          <span class="block text-sm mb-1 font-ibm font-medium text-gray-700">Recurring donation</span>
+          <span class="block text-sm mb-2 italic font-montserrat font-medium text-gray-700">Recurring donation</span>
           <FormKit 
             type="radio" 
             name="recurringDonation" 
             v-model="form.recurringDonation" 
             :options="recurringDonations"
             input-class="mr-2"
-            label-class="text-sm font-ibm font-medium text-gray-700"
+            label-class="text-sm mb-1 font-ibm font-medium text-gray-700"
           />
         </div>
         <UIButton
