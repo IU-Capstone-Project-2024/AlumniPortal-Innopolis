@@ -25,6 +25,10 @@ services:
       dockerfile: AuthService/Dockerfile
     volumes:
       - ./shared:/app/shared
+    environment:
+      - DB=${DB}
+      - SECRET=${SECRET}
+      - PORT=${PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth-service.rule=PathPrefix(`/auth`)"
@@ -43,6 +47,10 @@ services:
       dockerfile: AdditionalRequestService/Dockerfile
     volumes:
       - ./shared:/app/shared
+    environment:
+      - DB=${DB}
+      - SECRET=${SECRET}
+      - PORT=${PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.request-service.rule=PathPrefix(`/requests`)"
@@ -61,6 +69,10 @@ services:
       dockerfile: DonationService/Dockerfile
     volumes:
       - ./shared:/app/shared
+    environment:
+      - DB=${DB}
+      - SECRET=${SECRET}
+      - PORT=${PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.donation-service.rule=PathPrefix(`/donation`)"
@@ -79,6 +91,10 @@ services:
       dockerfile: EventService/Dockerfile
     volumes:
       - ./shared:/app/shared
+    environment:
+      - DB=${DB}
+      - SECRET=${SECRET}
+      - PORT=${PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.event-service.rule=PathPrefix(`/events`)"
@@ -97,6 +113,10 @@ services:
       dockerfile: ProjectService/Dockerfile
     volumes:
       - ./shared:/app/shared
+    environment:
+      - DB=${DB}
+      - SECRET=${SECRET}
+      - PORT=${PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.project-service.rule=PathPrefix(`/projects`)"
@@ -115,6 +135,10 @@ services:
       dockerfile: VolunteerService/Dockerfile
     volumes:
       - ./shared:/app/shared
+    environment:
+      - DB=${DB}
+      - SECRET=${SECRET}
+      - PORT=${PORT}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.volunteer-service.rule=PathPrefix(`/volunteer`)"
