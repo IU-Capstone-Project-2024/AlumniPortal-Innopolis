@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-20 container mx-auto p-4">
+  <div class="mt-[6rem] container mx-auto p-4">
     <header class="text-center">
       <h1 class="text-4xl font-montserrat font-bold mb-4 text-[#40BA21]">Funding and Donation System</h1>
     </header>
@@ -16,7 +16,11 @@
       <div class="text-left text-[#2167BA]">Collected {{ currentProject.collected }}/{{ currentProject.goal }}</div>
       <div class="text-right text-[#2167BA]">Days left: {{ daysLeft }}</div>
     </div>
+    <div class="container flex">
+      <UIDonationForm />
+    </div>
   </div>
+
 </template>
 
 <script setup>
