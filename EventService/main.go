@@ -35,10 +35,10 @@ func main() {
 	user.SetupRouter(r)
 	admin.SetupRouter(r)
 
-	err := r.Run(":9092")
+	logrus.Info("Starting Event Service")
 
-	if err != nil {
-		panic("Error starting Event Service")
+	if err := r.Run(":8084"); err != nil {
+		logrus.Fatal("Error starting Event Service")
+		panic(err)
 	}
-	logrus.Info("Event Service successfully started!")
 }

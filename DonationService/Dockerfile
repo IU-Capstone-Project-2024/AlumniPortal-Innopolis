@@ -1,22 +1,16 @@
-FROM golang:1.17-alpine AS build
-
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
-
-RUN apk add --no-cache git
+FROM golang:1.22.2-alpine AS build
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
+COPY DonationService/go.mod DonationService/go.sum ./
 
+COPY shared/go.mod shared/
+
+RUN go mod tidy
 RUN go mod download
 
-COPY . .
-
-VOLUME ../shared:/shared
+COPY DonationService/ .
+COPY shared/ ./shared
 
 RUN go build -o main .
 

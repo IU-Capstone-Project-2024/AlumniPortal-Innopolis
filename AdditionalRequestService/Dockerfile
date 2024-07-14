@@ -1,13 +1,20 @@
-FROM golang:1.20-alpine
+FROM golang:1.22.2-alpine AS build
 
 WORKDIR /app
 
-COPY go.mod go.sum ./
+COPY AdditionalRequestService/go.mod AdditionalRequestService/go.sum ./
 
+COPY shared/go.mod shared/
+COPY shared/go.sum shared/
+
+RUN go mod tidy
 RUN go mod download
 
-COPY . .
+COPY AdditionalRequestService/ .
+COPY shared/ ./shared
 
 RUN go build -o main .
+
+EXPOSE 8082
 
 CMD ["./main"]

@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   traefik:
-    image: traefik:v2.6
+    image: traefik:latest
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -12,14 +12,23 @@ services:
       - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - web
+    labels:
+      - "traefik.http.routers.traefik.rule=PathPrefix(`/traefik`)"
+      - "traefik.http.middlewares.traefik-auth.stripprefix.prefixes=/traefik"
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
 
   auth-service:
     build:
-      context: ./AdditionalRequestService
+      context: .
+      dockerfile: AuthService/Dockerfile
     volumes:
-      - ../shared:/app/shared
+      - ./shared:/app/shared
     labels:
-      - "traefik.http.routers.service1.rule=PathPrefix(``)"
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth-service.rule=PathPrefix(`/auth`)"
+      - "traefik.http.services.auth-service.loadbalancer.server.port=8081"
     networks:
       - web
     logging:
@@ -30,11 +39,14 @@ services:
 
   requests-service:
     build:
-      context: ./AuthService
+      context: .
+      dockerfile: AdditionalRequestService/Dockerfile
     volumes:
-      - ../shared:/app/shared
+      - ./shared:/app/shared
     labels:
-      - "traefik.http.routers.service1.rule=PathPrefix(`/requests`)"
+      - "traefik.enable=true"
+      - "traefik.http.routers.request-service.rule=PathPrefix(`/requests`)"
+      - "traefik.http.services.request-service.loadbalancer.server.port=8082"
     networks:
       - web
     logging:
@@ -43,59 +55,82 @@ services:
         max-size: "200k"
         max-file: "10"
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
+  donation-service:
+    build:
+      context: .
+      dockerfile: DonationService/Dockerfile
     volumes:
-      - esdata:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-      - "9300:9300"
+      - ./shared:/app/shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.donation-service.rule=PathPrefix(`/donation`)"
+      - "traefik.http.services.donation-service.loadbalancer.server.port=8083"
     networks:
-      - elk
+      - web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
 
-  logstash:
-    image: docker.elastic.co/logstash/logstash:7.13.4
-    container_name: logstash
+  event-service:
+    build:
+      context: .
+      dockerfile: EventService/Dockerfile
     volumes:
-      - ./elk/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    ports:
-      - "5000:5000"
-      - "9600:9600"
+      - ./shared:/app/shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.event-service.rule=PathPrefix(`/events`)"
+      - "traefik.http.routers.event-admin-service.rule=PathPrefix(`/event`)"
+      - "traefik.http.services.event-service.loadbalancer.server.port=8084"
+      - "traefik.http.services.event-admin-service.loadbalancer.server.port=8084"
     networks:
-      - elk
+      - web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
 
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.13.4
-    container_name: kibana
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-    networks:
-      - elk
-
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:7.13.4
-    container_name: filebeat
+  project-service:
+    build:
+      context: .
+      dockerfile: ProjectService/Dockerfile
     volumes:
-      - ./elk/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
-      - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - elasticsearch
-      - logstash
+      - ./shared:/app/shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.project-service.rule=PathPrefix(`/projects`)"
+      - "traefik.http.routers.project-admin-service.rule=PathPrefix(`/project`)"
+      - "traefik.http.services.project-service.loadbalancer.server.port=8085"
+      - "traefik.http.services.project-admin-service.loadbalancer.server.port=8085"
     networks:
-      - elk
+      - web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  volunteer-service:
+    build:
+      context: .
+      dockerfile: VolunteerService/Dockerfile
+    volumes:
+      - ./shared:/app/shared
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.volunteer-service.rule=PathPrefix(`/volunteer`)"
+      - "traefik.http.services.volunteer-service.loadbalancer.server.port=8086"
+    networks:
+      - web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
 
 networks:
   web:
     external: true
-  elk:
-    driver: bridge
-
-volumes:
-  esdata:
-    driver: local

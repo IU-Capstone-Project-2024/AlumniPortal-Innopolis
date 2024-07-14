@@ -38,10 +38,10 @@ func main() {
 	admin.SetupRouter(r)
 	alumni.SetupRouter(r)
 
-	err := r.Run(":3000")
+	logrus.Info("Starting Donation Service")
 
-	if err != nil {
-		panic("Error starting Event Service")
+	if err := r.Run(":8083"); err != nil {
+		logrus.Fatal("Error starting Donation Service")
+		panic(err)
 	}
-	logrus.Info("Event Service successfully started!")
 }

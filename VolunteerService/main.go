@@ -38,10 +38,10 @@ func main() {
 	admin.SetupRouter(r)
 	student.SetupRouter(r)
 
-	err := r.Run(":9090")
+	logrus.Info("Starting Volunteer Service")
 
-	if err != nil {
-		panic("Error starting AdditionalRequestService")
+	if err := r.Run(":8086"); err != nil {
+		logrus.Fatal("Error starting Volunteer Service")
+		panic(err)
 	}
-	logrus.Info("AdditionalRequestService successfully started!")
 }

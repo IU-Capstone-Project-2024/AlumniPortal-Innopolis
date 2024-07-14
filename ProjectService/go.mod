@@ -49,4 +49,4 @@ require (
 	gorm.io/gorm v1.25.10 // indirect
 )
 
-replace alumniportal.com/shared => ../shared
+replace alumniportal.com/shared => ./shared

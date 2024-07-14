@@ -7,7 +7,7 @@ import (
 )
 
 func SetupRouter(route *gin.Engine) {
-	admin := route.Group("/")
+	admin := route.Group("/auth")
 	admin.Use(middleware.RequireAdminRights)
 	{
 		admin.PATCH("verify", controllers.Verify)

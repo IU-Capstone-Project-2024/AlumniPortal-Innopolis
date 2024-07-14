@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package filteringservice;
 
+option go_package = "./";
+
 service FilteringService {
   rpc GradeDescription (GradeRequest) returns (GradeResponse);
 }

@@ -35,10 +35,10 @@ func main() {
 	user.SetupRouter(r)
 	admin.SetupRouter(r)
 
-	err := r.Run(":9091")
+	logrus.Info("Starting Project Service")
 
-	if err != nil {
-		panic("Error starting ProjectService")
+	if err := r.Run(":8085"); err != nil {
+		logrus.Fatal("Error starting Project Service")
+		panic(err)
 	}
-	logrus.Info("ProjectService successfully started!")
 }
