@@ -1,6 +1,6 @@
 <template>
-    <div :class="route.name == 'sign-in' || route.name =='sign-up' ? 'bg-opacity-75 dark:bg-opacity-75' : 'bg-opacity-20 dark:bg-opacity-20', route.name !== 'sign-in' && route.name !== 'sign-up' && route.name !== 'index' ? 'bg-[#40BA21] bg-opacity-10' : ''"
-        class="header flex items-center h-15 justify-between p-6 bg-white dark:bg-black absolute top-0 left-0 w-screen z-10">
+    <div :class="route.name == 'sign-in' || route.name =='sign-up' ? 'bg-opacity-75 bg-white !dark:bg-opacity-75 dark:bg-black' : 'bg-opacity-20 bg-white dark:!bg-black dark:!bg-opacity-20', route.name !== 'sign-in' && route.name !== 'sign-up' && route.name !== 'index' ? '!bg-[#40BA21] !bg-opacity-10' : ''"
+        class="header flex items-center h-15 justify-between p-6 absolute top-0 left-0 w-screen z-10">
         <HeaderLogo />
         <ul class="flex gap-4 font-ibm">
             <li>
