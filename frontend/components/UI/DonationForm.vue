@@ -4,6 +4,9 @@
         type="form" 
         class="space-y-6" 
         submit-label="Donate" 
+        :value="{
+          paymentMethod: 'PayPal'
+        }"
         @submit="submitHandler"
         :actions="false"
       >
@@ -18,6 +21,7 @@
           input-class="mt-1 block w-full p-1 font-ibm border border-gray-300 rounded-md shadow-sm focus:ring-green-500 focus:border-green-500"
           label-class="mt-1 block text-sm font-medium font-ibm text-gray-700" 
         />
+
         <FormKit 
           type="text" 
           name="lastName" 
@@ -63,7 +67,6 @@
           <FormKit 
             type="radio" 
             name="paymentMethod" 
-            v-model="form.paymentMethod" 
             :options="paymentMethods"
             input-class="mr-2"
             label-class="text-sm mb-1 font-ibm font-medium text-gray-700"
@@ -74,11 +77,11 @@
           <FormKit 
             type="radio" 
             name="recurringDonation" 
-            v-model="form.recurringDonation" 
             :options="recurringDonations"
             input-class="mr-2"
             label-class="text-sm mb-1 font-ibm font-medium text-gray-700"
           />
+          
         </div>
         <UIButton
           btn_type="submit"
@@ -96,11 +99,11 @@ const form = ref({
   recurringDonation: 'Monthly',
 });
 
-const paymentMethods = [
-  { value: 'Credit/Debit card', label: 'Credit/Debit card' },
-  { value: 'PayPal', label: 'PayPal' },
-  { value: 'Bank Transfer', label: 'Bank Transfer' },
-];
+const paymentMethods = {
+  card: 'Credit/Debit card',
+  PayPal: 'PayPal',
+  BankTransfer: 'Bank Transfer' 
+};
 
 const recurringDonations = [
   { value: 'Monthly', label: 'Monthly' },
