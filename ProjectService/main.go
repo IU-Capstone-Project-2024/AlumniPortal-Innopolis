@@ -1,4 +1,4 @@
-package ProjectService
+package main
 
 import (
 	"ProjectService/routes/admin"

@@ -7,10 +7,10 @@ import (
 )
 
 func SetupRouter(route *gin.Engine) {
-	admin := route.Group("/project")
+	admin := route.Group("/projects")
 	admin.Use(middleware.RequireAdminRights)
 	{
-		admin.GET("/:id", controllers.GetProjectAdmin)
+		admin.GET("/admin/:id", controllers.GetProjectAdmin)
 		admin.GET("/unverified", controllers.GetUnverifiedProjects)
 		admin.PATCH("/edit/:id", controllers.UpdateProjectAdmin)
 		admin.DELETE("/delete/:id", controllers.DeleteProject)

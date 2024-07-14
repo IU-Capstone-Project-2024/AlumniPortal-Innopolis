@@ -7,10 +7,10 @@ import (
 )
 
 func SetupRouter(route *gin.Engine) {
-	admin := route.Group("/event")
+	admin := route.Group("/events")
 	admin.Use(middleware.RequireAdminRights)
 	{
-		admin.GET("/:id", controllers.GetEventAdmin)
+		admin.GET("/admin/:id", controllers.GetEventAdmin)
 		admin.GET("/unverified", controllers.GetUnverifiedEvents)
 		admin.PATCH("/edit/:id", controllers.UpdateEventAdmin)
 		admin.DELETE("/delete/:id", controllers.DeleteEvent)

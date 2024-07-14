@@ -15,6 +15,8 @@ COPY shared/ ./shared
 
 RUN go build -o main .
 
+RUN chmod +x /app/main
+
 EXPOSE 8082
 
 CMD ["./main"]

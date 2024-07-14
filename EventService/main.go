@@ -1,4 +1,4 @@
-package EventService
+package main
 
 import (
 	"EventService/routes/admin"

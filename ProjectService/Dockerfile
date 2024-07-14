@@ -1,4 +1,4 @@
-FROM golang:1.22.2-alpine AS build
+FROM golang:1.22.2-alpine AS builder
 
 WORKDIR /app
 
@@ -13,6 +13,12 @@ COPY ProjectService/ .
 COPY shared/ ./shared
 
 RUN go build -o main .
+
+RUN chmod +x /app/main
+
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/main .
 
 EXPOSE 8085
 

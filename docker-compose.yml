@@ -82,9 +82,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.event-service.rule=PathPrefix(`/events`)"
-      - "traefik.http.routers.event-admin-service.rule=PathPrefix(`/event`)"
       - "traefik.http.services.event-service.loadbalancer.server.port=8084"
-      - "traefik.http.services.event-admin-service.loadbalancer.server.port=8084"
     networks:
       - web
     logging:
@@ -102,9 +100,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.project-service.rule=PathPrefix(`/projects`)"
-      - "traefik.http.routers.project-admin-service.rule=PathPrefix(`/project`)"
       - "traefik.http.services.project-service.loadbalancer.server.port=8085"
-      - "traefik.http.services.project-admin-service.loadbalancer.server.port=8085"
     networks:
       - web
     logging:

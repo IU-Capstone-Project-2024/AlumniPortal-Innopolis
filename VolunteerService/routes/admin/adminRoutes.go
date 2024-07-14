@@ -12,7 +12,7 @@ func SetupRouter(route *gin.Engine) {
 
 	protected.Use(middleware.RequireAdminRights)
 	{
-		protected.GET("/:id", controllers.GetVolunteerRequest)
-		protected.DELETE("/:id/delete", controllers.DeleteVolunteerRequest)
+		protected.GET("admin/:id", controllers.GetVolunteerRequest)
+		protected.DELETE("admin/:id/delete", controllers.DeleteVolunteerRequest)
 	}
 }

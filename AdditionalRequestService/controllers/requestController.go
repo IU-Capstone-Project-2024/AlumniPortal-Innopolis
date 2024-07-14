@@ -3,7 +3,7 @@ package controllers
 import (
 	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
-	sharedModels "alumniportal.com/shared/models"
+	"alumniportal.com/shared/models"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -46,12 +46,12 @@ func CreatePassRequest(c *gin.Context) {
 	}
 
 	user, _ := c.Get("user")
-	passRequest := sharedModels.PassRequest{
-		UserID:             user.(sharedModels.User).ID,
+	passRequest := models.PassRequest{
+		UserID:             user.(models.User).ID,
 		PassStartDate:      startDate,
 		PassExpirationDate: expirationDate,
 		Message:            input.Message,
-		PassType:           sharedModels.PassType(input.PassType),
+		PassType:           models.PassType(input.PassType),
 		Status:             helpers.Unverified,
 	}
 
@@ -64,14 +64,14 @@ func CreatePassRequest(c *gin.Context) {
 	}
 
 	logrus.WithFields(logrus.Fields{
-		"user_id":    user.(sharedModels.User).ID,
+		"user_id":    user.(models.User).ID,
 		"request_id": passRequest.ID,
 	}).Info("Pass request created successfully")
 	c.JSON(http.StatusOK, passRequest)
 }
 
 func DeletePassRequest(c *gin.Context) {
-	var passRequest sharedModels.PassRequest
+	var passRequest models.PassRequest
 
 	user, exists := c.Get("user")
 
@@ -81,7 +81,7 @@ func DeletePassRequest(c *gin.Context) {
 		return
 	}
 
-	if user.(sharedModels.User).IsAdmin == true {
+	if user.(models.User).IsAdmin == true {
 		if err := initializers.DB.Where("id = ?", c.Param("id")).First(&passRequest).Error; err != nil {
 			logrus.WithFields(logrus.Fields{
 				"request_id": c.Param("id"),
@@ -101,9 +101,9 @@ func DeletePassRequest(c *gin.Context) {
 		}
 	}
 
-	if passRequest.UserID != user.(sharedModels.User).ID && user.(sharedModels.User).IsAdmin == false {
+	if passRequest.UserID != user.(models.User).ID && user.(models.User).IsAdmin == false {
 		logrus.WithFields(logrus.Fields{
-			"user_id":    user.(sharedModels.User).ID,
+			"user_id":    user.(models.User).ID,
 			"request_id": passRequest.ID,
 		}).Warn("Unauthorized user attempting to delete pass request")
 		c.JSON(http.StatusForbidden, gin.H{"error": "Unauthorized: User is not the owner of this pass request"})
@@ -112,14 +112,14 @@ func DeletePassRequest(c *gin.Context) {
 
 	initializers.DB.Delete(&passRequest)
 	logrus.WithFields(logrus.Fields{
-		"user_id":    user.(sharedModels.User).ID,
+		"user_id":    user.(models.User).ID,
 		"request_id": passRequest.ID,
 	}).Info("Pass request deleted successfully")
 	c.JSON(http.StatusOK, gin.H{"data": true})
 }
 
 func UpdatePassRequest(c *gin.Context) {
-	var passRequest sharedModels.PassRequest
+	var passRequest models.PassRequest
 	if err := initializers.DB.Where("id = ? AND status = ?", c.Param("id"), helpers.Unverified).First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"request_id": c.Param("id"),
@@ -136,9 +136,9 @@ func UpdatePassRequest(c *gin.Context) {
 		return
 	}
 
-	if passRequest.UserID != user.(sharedModels.User).ID {
+	if passRequest.UserID != user.(models.User).ID {
 		logrus.WithFields(logrus.Fields{
-			"user_id":    user.(sharedModels.User).ID,
+			"user_id":    user.(models.User).ID,
 			"request_id": passRequest.ID,
 		}).Warn("Unauthorized user attempting to update pass request")
 		c.JSON(http.StatusForbidden, gin.H{"error": "Unauthorized: User is not the owner of this pass request"})
@@ -172,11 +172,11 @@ func UpdatePassRequest(c *gin.Context) {
 		return
 	}
 
-	updateData := sharedModels.PassRequest{
+	updateData := models.PassRequest{
 		PassStartDate:      startDate,
 		PassExpirationDate: expirationDate,
 		Message:            input.Message,
-		PassType:           sharedModels.PassType(input.PassType),
+		PassType:           models.PassType(input.PassType),
 	}
 
 	if err := initializers.DB.Model(&passRequest).Updates(updateData).Error; err != nil {
@@ -188,7 +188,7 @@ func UpdatePassRequest(c *gin.Context) {
 	}
 
 	logrus.WithFields(logrus.Fields{
-		"user_id":    user.(sharedModels.User).ID,
+		"user_id":    user.(models.User).ID,
 		"request_id": passRequest.ID,
 	}).Info("Pass request updated successfully")
 	c.JSON(http.StatusOK, passRequest)
@@ -203,7 +203,7 @@ func DeclinePassRequest(c *gin.Context) {
 }
 
 func updatePassRequestStatus(c *gin.Context, status helpers.VerificationStatus) {
-	var passRequest sharedModels.PassRequest
+	var passRequest models.PassRequest
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"request_id": c.Param("id"),
@@ -232,10 +232,10 @@ func updatePassRequestStatus(c *gin.Context, status helpers.VerificationStatus) 
 
 func GetCurrentUserRequests(c *gin.Context) {
 	user, _ := c.Get("user")
-	var passRequests []sharedModels.PassRequest
-	if err := initializers.DB.Where("user_id = ?", user.(sharedModels.User).ID).Preload("User").Find(&passRequests).Error; err != nil {
+	var passRequests []models.PassRequest
+	if err := initializers.DB.Where("user_id = ?", user.(models.User).ID).Preload("User").Find(&passRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
-			"user_id": user.(sharedModels.User).ID,
+			"user_id": user.(models.User).ID,
 			"error":   err.Error(),
 		}).Error("Failed to get current user pass requests")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -243,15 +243,15 @@ func GetCurrentUserRequests(c *gin.Context) {
 	}
 
 	logrus.WithFields(logrus.Fields{
-		"user_id": user.(sharedModels.User).ID,
+		"user_id": user.(models.User).ID,
 		"count":   len(passRequests),
 	}).Info("Fetched current user pass requests successfully")
 	c.JSON(http.StatusOK, passRequests)
 }
 
 func GetUnverifiedRequests(c *gin.Context) {
-	var passRequests []sharedModels.PassRequest
-  
+	var passRequests []models.PassRequest
+
 	if err := initializers.DB.Where("status = ?", helpers.Unverified).Preload("User").Find(&passRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
@@ -267,7 +267,7 @@ func GetUnverifiedRequests(c *gin.Context) {
 }
 
 func GetAdminPassRequest(c *gin.Context) {
-	var passRequest sharedModels.PassRequest
+	var passRequest models.PassRequest
 
 	if err := initializers.DB.Where("status = ? AND id = ?", helpers.Unverified, c.Param("id")).Preload("User").First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
@@ -285,13 +285,13 @@ func GetAdminPassRequest(c *gin.Context) {
 }
 
 func GetPassRequest(c *gin.Context) {
-	var passRequest sharedModels.PassRequest
+	var passRequest models.PassRequest
 
 	user, _ := c.Get("user")
 
-	if err := initializers.DB.Where("id = ? AND user_id = ?", c.Param("id"), user.(sharedModels.User).ID).Preload("User").First(&passRequest).Error; err != nil {
+	if err := initializers.DB.Where("id = ? AND user_id = ?", c.Param("id"), user.(models.User).ID).Preload("User").First(&passRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
-			"user_id":    user.(sharedModels.User).ID,
+			"user_id":    user.(models.User).ID,
 			"request_id": c.Param("id"),
 			"error":      err.Error(),
 		}).Error("Failed to get pass request")
@@ -300,7 +300,7 @@ func GetPassRequest(c *gin.Context) {
 	}
 
 	logrus.WithFields(logrus.Fields{
-		"user_id":    user.(sharedModels.User).ID,
+		"user_id":    user.(models.User).ID,
 		"request_id": passRequest.ID,
 	}).Info("Fetched pass request successfully")
 	c.JSON(http.StatusOK, passRequest)
