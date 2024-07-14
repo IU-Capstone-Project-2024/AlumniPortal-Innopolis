@@ -45,6 +45,7 @@
         <UIButton  
           @click="navigateToSignUp"
           text="Register"
+          btn_type='button'
          /> 
       </FormKit>
     </div>
