@@ -5,7 +5,7 @@
       <h2 class="text-xl font-semibold mb-2">{{ header }}</h2>
       <p class="text-gray-700 mb-4">{{ description }}</p>
       <UIButton
-        @click="learnMore"
+        @click="$emit('clicked', project.id)"
         text="Learn more"
         class="mt-7"
       />
@@ -28,10 +28,13 @@ defineProps({
     type: String,
     required: true,
   },
+  project: {
+    type: {
+      id: {
+        type: Number,
+      }
+    },
+    required: true,
+  }
 });
-
-const learnMore = () => {
-  // Add your logic here
-  alert('Learn more clicked!');
-};
 </script>

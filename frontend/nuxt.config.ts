@@ -3,7 +3,11 @@ import { resolve } from 'path'
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
-  modules: ['@formkit/nuxt', '@nuxtjs/color-mode'],
+  modules: [
+      '@formkit/nuxt',
+      '@nuxtjs/color-mode',
+      '@pinia/nuxt',
+  ],
   colorMode: {
     preference: 'system',
     fallback: 'light',

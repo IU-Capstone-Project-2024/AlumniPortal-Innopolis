@@ -30,8 +30,7 @@ const route = useRoute()
 </script>
 
 <style lang="sass" scoped>
-.router-link-exact-active
+.router-link-active
     font-weight: bold
     color: #40BA21
-
 </style>
