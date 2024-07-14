@@ -2,31 +2,28 @@ package initializers
 
 import (
 	"alumniportal.com/shared/models"
+	"fmt"
 	"github.com/sirupsen/logrus"
 )
 
 func SyncDatabase() {
-	if DB.AutoMigrate(&models.User{}) != nil {
-		panic("Database models.User migration failed")
-	}
-	if DB.AutoMigrate(&models.PassRequest{}) != nil {
-		panic("Database models.PassRequest migration failed")
-	}
-	if DB.AutoMigrate(&models.Project{}) != nil {
-		panic("Database models.Project migration failed")
-	}
-	if DB.AutoMigrate(&models.Participant{}) != nil {
-		panic("Database models.Participant migration failed")
-	}
-	if DB.AutoMigrate(&models.Event{}) != nil {
-		panic("Database models.Event migration failed")
-	}
-	if DB.AutoMigrate(&models.Donation{}) != nil {
-		panic("Database models.Donation migration failed")
-	}
-	if DB.AutoMigrate(&models.Volunteer{}) != nil {
-		panic("Database models.Volunteer migration failed")
-	}
+	migrateModel(&models.User{})
+	migrateModel(&models.PassRequest{})
+	migrateModel(&models.Project{})
+	migrateModel(&models.Participant{})
+	migrateModel(&models.Event{})
+	migrateModel(&models.Donation{})
+	migrateModel(&models.Volunteer{})
 
 	logrus.Info("Database migration completed!")
+}
+
+func migrateModel(model interface{}) {
+	if !DB.Migrator().HasTable(model) {
+		if err := DB.AutoMigrate(model); err != nil {
+			panic(fmt.Sprintf("Database migration for %T failed: %v", model, err))
+		}
+	} else {
+		logrus.Infof("Skipping migration for %T - table already exists", model)
+	}
 }
