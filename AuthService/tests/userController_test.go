@@ -39,7 +39,7 @@ func init() {
 	// Perform any other setup needed
 }
 
-func TestSignup(t *testing.T) {
+func TestSignupPositive(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	router := gin.Default()
 	router.POST("/signup", controllers.Signup)
@@ -61,17 +61,26 @@ func TestSignup(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.Code)
 	assert.Contains(t, resp.Body.String(), "{}")
 
+	initializers.DB.Exec("DELETE FROM users WHERE email = 'testuser@example.com'")
+
+}
+
+func TestSignupNegative(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	router := gin.Default()
+	router.POST("/signup", controllers.Signup)
+
 	// Negative case: Missing email
-	body = map[string]interface{}{
+	body := map[string]interface{}{
 		"name":     "Test",
 		"lastName": "User",
 		"password": "testpassword",
 	}
-	jsonBody, _ = json.Marshal(body)
-	req, _ = http.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(jsonBody))
+	jsonBody, _ := json.Marshal(body)
+	req, _ := http.NewRequest(http.MethodPost, "/signup", bytes.NewBuffer(jsonBody))
 	req.Header.Set("Content-Type", "application/json")
 
-	resp = httptest.NewRecorder()
+	resp := httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 
 	assert.Equal(t, http.StatusBadRequest, resp.Code)
@@ -131,6 +140,8 @@ func TestLogin(t *testing.T) {
 
 	assert.Equal(t, http.StatusUnauthorized, resp.Code)
 	assert.Contains(t, resp.Body.String(), "Invalid Email or Password")
+
+	initializers.DB.Exec("DELETE FROM users WHERE id = $1", user.ID)
 }
 
 func TestGetInfo(t *testing.T) {
@@ -139,9 +150,9 @@ func TestGetInfo(t *testing.T) {
 	router.GET("/info", controllers.GetInfo)
 
 	// Positive case: User info
-	user := models.User{Name: "Test", LastName: "User", Email: "testuser@example.com", Role: "admin", Specialization: "IT", PortfolioLink: "portfolio.com", SocialsLink: "socials.com", IsAlumni: true, IsAdmin: true}
+	user := models.User{Name: "Test", LastName: "User", Email: "testuser@example.com", Role: "admin", Specialization: "IT", PortfolioLink: "portfolio.com", SocialsLink: "socials.com", IsAlumni: false, IsAdmin: false}
 	initializers.DB.Create(&user)
-
+	
 	req, _ := http.NewRequest(http.MethodGet, "/info", nil)
 	req.Header.Set("Content-Type", "application/json")
 	req.AddCookie(&http.Cookie{Name: "Authorization", Value: "valid_token"})
@@ -164,4 +175,6 @@ func TestGetInfo(t *testing.T) {
 
 	assert.Equal(t, http.StatusUnauthorized, resp.Code)
 	assert.Contains(t, resp.Body.String(), "User not found")
+
+	initializers.DB.Exec("DELETE FROM users WHERE id = $1", user.ID)
 }
