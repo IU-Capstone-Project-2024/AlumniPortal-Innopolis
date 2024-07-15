@@ -309,3 +309,23 @@ func GetProject(c *gin.Context) {
 	}).Info("Fetched project successfully")
 	c.JSON(http.StatusOK, project)
 }
+
+func GetProjects(c *gin.Context) {
+	var projects []sharedModels.Project
+
+	user, _ := c.Get("user")
+
+	if err := initializers.DB.Preload("User").Find(&projects).Error; err != nil {
+		logrus.WithFields(logrus.Fields{
+			"user_id": user.(sharedModels.User).ID,
+			"error":   err.Error(),
+		}).Error("Failed to get projects")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"user_id": user.(sharedModels.User).ID,
+	}).Info("Fetched projects successfully")
+	c.JSON(http.StatusOK, projects)
+}
