@@ -47,8 +47,8 @@ jobs:
 
       - name: Validate deployment
         run: |
-          curl -I http://localhost:80/validate
-          curl -I http://localhost:80/verify
+          curl -I http://localhost:80/auth/validate
+          curl -I http://localhost:80/auth/verify
 
       - name: Clean up
         run: docker-compose down
