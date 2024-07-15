@@ -35,10 +35,10 @@ func main() {
 	alumni.SetupRouter(r)
 	admin.SetupRouter(r)
 
-	err := r.Run(":9090")
+	logrus.Info("Starting Request Service")
 
-	if err != nil {
-		panic("Error starting AdditionalRequestService")
+	if err := r.Run(":8082"); err != nil {
+		logrus.Fatal("Failed to start Request Service")
+		panic(err)
 	}
-	logrus.Info("AdditionalRequestService successfully started!")
 }

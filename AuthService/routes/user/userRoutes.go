@@ -7,13 +7,13 @@ import (
 )
 
 func SetupRouter(route *gin.Engine) {
-	public := route.Group("/")
+	public := route.Group("/auth")
 	{
 		public.POST("signup", controllers.Signup)
 		public.POST("login", controllers.Login)
 	}
 
-	protected := route.Group("/")
+	protected := route.Group("/auth")
 	protected.Use(middleware.RequireAuth)
 	{
 		protected.GET("validate", controllers.Validate)

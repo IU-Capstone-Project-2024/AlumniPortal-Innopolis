@@ -32,10 +32,10 @@ func main() {
 	user.SetupRouter(r)
 	admin.SetupRouter(r)
 
-	err := r.Run()
+	logrus.Info("Starting Auth Service")
 
-	if err != nil {
-		panic("Error starting AuthService")
+	if err := r.Run(":8081"); err != nil {
+		logrus.Fatal("Failed to start Auth Service")
+		panic(err)
 	}
-	logrus.Info("AuthService successfully started!")
 }
