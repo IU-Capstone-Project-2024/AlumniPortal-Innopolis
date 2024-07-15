@@ -39,9 +39,6 @@ jobs:
       - name: Build and push Docker images
         run: docker-compose build
 
-      - name: Deploy with docker-compose
-        run: docker-compose up -d
-
       - name: Wait for services to be ready
         run: sleep 45
 
