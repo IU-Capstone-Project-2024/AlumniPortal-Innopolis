@@ -322,3 +322,23 @@ func GetEvent(c *gin.Context) {
 	}).Info("Fetched event successfully")
 	c.JSON(http.StatusOK, event)
 }
+
+func GetEvents(c *gin.Context) {
+	var events []sharedModels.Event
+
+	user, _ := c.Get("user")
+
+	if err := initializers.DB.Preload("User").Find(&events).Error; err != nil {
+		logrus.WithFields(logrus.Fields{
+			"user_id": user.(sharedModels.User).ID,
+			"error":   err.Error(),
+		}).Error("Failed to get events")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	logrus.WithFields(logrus.Fields{
+		"user_id": user.(sharedModels.User).ID,
+	}).Info("Fetched events successfully")
+	c.JSON(http.StatusOK, events)
+}
