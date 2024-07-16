@@ -66,8 +66,8 @@ jobs:
 
       - name: Copy files to the server
         run: |
-            scp -o StrictHostKeyChecking=no -r . ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/creepydandota/capstone/AlumniPortal-Innopolis
-
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" --exclude='.git' --exclude='node_modules' ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/capstone/AlumniPortal-Innopolis
+      
       - name: Deploy with docker-compose on remote server
         run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
