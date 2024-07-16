@@ -72,12 +72,12 @@ jobs:
         run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd /home/${{ secrets.SSH_USERNAME }}/capstone/AlumniPortal-Innopolis
-            docker network create web || true
-            docker-compose up -d --build
+            sudo docker network create web || true
+            sudo docker-compose up -d --build
             EOF
 
       - name: Wait for services to be ready
-        run: sleep 45
+        run: sleep 200
 
       - name: Validate deployment
         run: |
