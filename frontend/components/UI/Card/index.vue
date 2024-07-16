@@ -8,7 +8,7 @@
         @click="$emit('clicked', project.id)"
         text="Learn more"
         class="mt-7"
-        type="button"
+        btn_type="button"
       />
     </div>
   </div>
