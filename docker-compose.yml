@@ -23,6 +23,8 @@ services:
     build:
       context: .
       dockerfile: AuthService/Dockerfile
+    image:
+      danyadrakon/auth-service:latest
     volumes:
       - ./shared:/app/shared
     environment:
@@ -45,6 +47,8 @@ services:
     build:
       context: .
       dockerfile: AdditionalRequestService/Dockerfile
+    image:
+      danyadrakon/requests-service:latest
     volumes:
       - ./shared:/app/shared
     environment:
@@ -67,6 +71,8 @@ services:
     build:
       context: .
       dockerfile: DonationService/Dockerfile
+    image:
+      danyadrakon/donation-service:latest
     volumes:
       - ./shared:/app/shared
     environment:
@@ -89,6 +95,8 @@ services:
     build:
       context: .
       dockerfile: EventService/Dockerfile
+    image:
+      danyadrakon/event-service:latest
     volumes:
       - ./shared:/app/shared
     environment:
@@ -111,6 +119,8 @@ services:
     build:
       context: .
       dockerfile: ProjectService/Dockerfile
+    image:
+      danyadrakon/project-service:latest
     volumes:
       - ./shared:/app/shared
     environment:
@@ -133,6 +143,8 @@ services:
     build:
       context: .
       dockerfile: VolunteerService/Dockerfile
+    image:
+      danyadrakon/volunteer-service:latest
     volumes:
       - ./shared:/app/shared
     environment:
