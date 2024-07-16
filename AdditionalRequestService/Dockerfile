@@ -1,25 +1,22 @@
-FROM golang:1.17-alpine AS build
-
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
-
-RUN apk add --no-cache git
+FROM golang:1.22.2-alpine AS build
 
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
+COPY AdditionalRequestService/go.mod AdditionalRequestService/go.sum ./
 
+COPY shared/go.mod shared/
+COPY shared/go.sum shared/
+
+RUN go mod tidy
 RUN go mod download
 
-COPY . .
-
-VOLUME ../shared:/shared
+COPY AdditionalRequestService/ .
+COPY shared/ ./shared
 
 RUN go build -o main .
 
-EXPOSE 8080
+RUN chmod +x /app/main
+
+EXPOSE 8082
 
 CMD ["./main"]

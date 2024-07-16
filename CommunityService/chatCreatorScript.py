@@ -1,19 +1,16 @@
+import json
 import logging
-import os
+import requests
 import time
 from getpass import getpass
-
-import requests
-from dotenv import load_dotenv
 from telethon import TelegramClient, errors
 from telethon.tl.functions.messages import CreateChatRequest
 
-load_dotenv()
-# Укажите в .env ваши параметры API и данные пользователя
-api_id = os.getenv("API_ID")
-api_hash = os.getenv("API_HASH")
-phone_number = os.getenv("PHONE")
-data_url = os.getenv("DATA_URL")
+# Укажите здесь ваши параметры API и данные пользователя
+api_id = '27007150'
+api_hash = '3db17b4032beef04ef4ca239734014aa'
+phone_number = '+79166133300'  # Замените на ваш телефонный номер в международном формате
+data_url = 'https://127.0.0.1:3000/create_chat'  # Замените на URL вашего веб-сервиса
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
