@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/ayush6624/go-chatgpt"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"log"
