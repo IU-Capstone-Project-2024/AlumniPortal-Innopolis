@@ -1,6 +1,7 @@
 package main
 
 import (
+	"alumniportal.com/shared/initializers"
 	"context"
 	"github.com/ayush6624/go-chatgpt"
 	"github.com/sirupsen/logrus"
@@ -12,6 +13,10 @@ import (
 
 	pb "alumniportal.com/shared/grpc/proto"
 )
+
+func init() {
+	initializers.LoadEnvVariables()
+}
 
 type server struct {
 	pb.UnimplementedFilteringServiceServer
