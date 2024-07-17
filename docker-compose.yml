@@ -91,6 +91,27 @@ services:
         max-size: "200k"
         max-file: "10"
 
+  filtering-service:
+    build:
+      context: .
+      dockerfile: FilteringService/Dockerfile
+    image:
+      danyadrakon/filtering-service:latest
+    volumes:
+      - ./shared:/app/shared
+    environment:
+      - DB=${DB}
+      - SECRET=${SECRET}
+      - PORT=${PORT}
+    networks:
+      - web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+
   event-service:
     build:
       context: .

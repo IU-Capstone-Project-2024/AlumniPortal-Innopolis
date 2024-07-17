@@ -1,11 +1,14 @@
 package controllers
 
 import (
+	pb "alumniportal.com/shared/grpc/proto"
 	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
 	sharedModels "alumniportal.com/shared/models"
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 	"gorm.io/datatypes"
 	"net/http"
 )
@@ -15,6 +18,17 @@ type EventInput struct {
 	Description string `json:"description" binding:"required"`
 	Datetime    string `json:"date" binding:"required"`
 	Duration    int    `json:"duration" binding:"required"`
+}
+
+var filteringServiceAddress = "localhost:50051"
+
+func NewFilteringServiceClient() (pb.FilteringServiceClient, *grpc.ClientConn, error) {
+	conn, err := grpc.Dial(filteringServiceAddress, grpc.WithInsecure())
+	if err != nil {
+		return nil, nil, err
+	}
+	client := pb.NewFilteringServiceClient(conn)
+	return client, conn, nil
 }
 
 func CreateEvent(c *gin.Context) {
@@ -35,6 +49,48 @@ func CreateEvent(c *gin.Context) {
 		Date:        datatypes.Date(helpers.Convert(input.Datetime)),
 		Duration:    input.Duration,
 		Status:      helpers.Unverified,
+	}
+
+	// Call the Filter function via gRPC using the client setup
+	client, conn, err := NewFilteringServiceClient()
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error("Failed to create gRPC client")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create gRPC client"})
+		return
+	}
+	defer func(conn *grpc.ClientConn) {
+		err := conn.Close()
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"error": err.Error(),
+			}).Error("Failed to close gRPC client connection")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create gRPC client"})
+			return
+		}
+	}(conn)
+
+	req := &pb.GradeRequest{
+		Description: eventRequest.Description,
+		IsProject:   false,
+	}
+
+	resp, err := client.GradeDescription(context.Background(), req)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error("Failed to grade event description via gRPC")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to grade project description via gRPC"})
+		return
+	}
+
+	gptGrade := int(resp.Grade)
+
+	if gptGrade <= 6 {
+		logrus.Info("Refused to create event: grade <= 6")
+		c.JSON(http.StatusNotAcceptable, gin.H{"Result": "description is not suitable to proceed!"})
+		return
 	}
 
 	if err := initializers.DB.Create(&eventRequest).Error; err != nil {
