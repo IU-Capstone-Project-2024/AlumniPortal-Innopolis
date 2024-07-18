@@ -18,7 +18,8 @@
     "sass": "^1.77.6",
     "vee-validate": "^4.13.2",
     "vue": "latest",
-    "vuetify": "^3.6.12"
+    "vuetify": "^3.6.12",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@nuxtjs/color-mode": "^3.4.2",
