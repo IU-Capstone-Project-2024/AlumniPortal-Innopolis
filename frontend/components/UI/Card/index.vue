@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-sm bg-white rounded-lg shadow-md overflow-hidden">
-    <img :src="image" alt="Card image" class="w-full h-48 object-cover">
+    <img :src='image' alt="Card image" class="w-full h-48 object-cover">
     <div class="p-6">
       <h2 class="text-xl font-semibold mb-2">{{ header }}</h2>
       <p class="text-gray-700 mb-4">{{ description }}</p>

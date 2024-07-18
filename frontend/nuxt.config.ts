@@ -7,7 +7,17 @@ export default defineNuxtConfig({
       '@formkit/nuxt',
       '@nuxtjs/color-mode',
       '@pinia/nuxt',
+      '@vee-validate/nuxt'
   ],
+  veeValidate: {
+    autoImports: true,
+    componentNames: {
+      Form: 'VeeForm',
+      Field: 'VeeField',
+      FieldArray: 'VeeFieldArray',
+      ErrorMessage: 'VeeErrorMessage',
+    },
+  },
   colorMode: {
     preference: 'system',
     fallback: 'light',

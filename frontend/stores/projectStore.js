@@ -6,7 +6,7 @@ export const useProjectStore = defineStore({
             projects: [
                 {
                     id: 1,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -14,7 +14,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 2,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -22,7 +22,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 3,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -30,7 +30,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 4,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -38,7 +38,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 5,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -46,7 +46,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 6,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -54,7 +54,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 7,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -62,7 +62,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 8,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -70,7 +70,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 9,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
@@ -78,7 +78,7 @@ export const useProjectStore = defineStore({
                 },
                 {
                     id: 10,
-                    url: '_nuxt/assets/inno.png',
+                    url: 'inno.png',
                     title: 'Inno',
                     desc: 'description',
                     collected: 50,
