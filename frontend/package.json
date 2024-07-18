@@ -13,6 +13,7 @@
     "@formkit/nuxt": "^1.6.5",
     "@pinia/nuxt": "^0.5.1",
     "@vee-validate/nuxt": "^4.13.2",
+    "@vee-validate/yup": "^4.13.2",
     "nuxt": "^3.12.3",
     "pinia": "^2.1.7",
     "sass": "^1.77.6",
