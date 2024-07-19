@@ -25,4 +25,5 @@ const projects = store.getProjects
 
 <style lang="sass" scoped>
 
+
 </style>
