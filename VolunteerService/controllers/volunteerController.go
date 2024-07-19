@@ -117,7 +117,7 @@ func GetStudentVolunteerRequest(c *gin.Context) {
 }
 func GetUnverifiedVolunteers(c *gin.Context) {
 	var volunteers []sharedModels.Volunteer
-	if err := initializers.DB.Where("status = ?", sharedModels.UnverifiedVolunteer).Preload("User").Find(&volunteers).Error; err != nil {
+	if err := initializers.DB.Where("status = ?", sharedModels.UnverifiedVolunteer).Preload("User").Preload("Project").Find(&volunteers).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
 		}).Error("Failed to get unverified volunteers")
@@ -131,7 +131,7 @@ func GetUnverifiedVolunteers(c *gin.Context) {
 func GetCurrentUserRequests(c *gin.Context) {
 	user, _ := c.Get("user")
 	var volunteerRequests []sharedModels.Volunteer
-	if err := initializers.DB.Where("user_id = ?", user.(sharedModels.User).ID).Preload("User").Find(&volunteerRequests).Error; err != nil {
+	if err := initializers.DB.Where("user_id = ?", user.(sharedModels.User).ID).Preload("User").Preload("Project").Find(&volunteerRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"user_id": user.(sharedModels.User).ID,
 			"error":   err.Error(),
