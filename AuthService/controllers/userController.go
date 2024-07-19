@@ -119,7 +119,35 @@ func Login(c *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"user_id": user.ID,
 	}).Info("User logged in successfully")
-	c.JSON(http.StatusOK, gin.H{})
+
+	var role string
+
+	if user.IsAdmin && user.Verified {
+		role = "Admin"
+	} else {
+		if user.IsAlumni && user.Verified {
+			role = "Alumni"
+		} else {
+			if user.Verified {
+				role = "Student"
+			} else {
+				role = "Unverified"
+			}
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"name":                       user.Name,
+		"lastName":                   user.LastName,
+		"email":                      user.Email,
+		"specialization":             user.Specialization,
+		"AvailableCustomerInterview": user.AvailableCustdev,
+		"Description":                user.Description,
+		"PortfolioLink":              user.PortfolioLink,
+		"SocialsLink":                user.SocialsLink,
+		"role":                       role,
+	})
+
 }
 
 func Validate(c *gin.Context) {

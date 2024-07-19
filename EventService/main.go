@@ -4,7 +4,6 @@ import (
 	"EventService/routes/admin"
 	"EventService/routes/user"
 	"alumniportal.com/shared/initializers"
-	"alumniportal.com/shared/middleware"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -25,7 +24,7 @@ func main() {
 		AllowHeaders: []string{"Content-Type,access-control-allow-origin, access-control-allow-headers"},
 	}))
 
-	r.Use(middleware.AuthenticateToken())
+	// r.Use(middleware.AuthenticateToken())
 
 	r.ForwardedByClientIP = true
 	if r.SetTrustedProxies([]string{"127.0.0.1"}) != nil {
