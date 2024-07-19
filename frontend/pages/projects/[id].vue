@@ -10,11 +10,11 @@
     </div>
 
     <div class="mb-10">
-      <div class="text-left text-[#2167BA] mb-4">Goal: {{ currentProject.goal + '$'}}</div>
+      <div class="text-left text-gray-800 mb-4">Goal: {{ currentProject.goal + '$'}}</div>
       <UIProgressBar :collected="currentProject.collected" :goal="currentProject.goal" />
       <div class="flex justify-between mt-4">
-        <div class="text-left text-[#2167BA]">Collected {{ currentProject.collected }}/{{ currentProject.goal }}</div>
-        <div class="text-right text-[#2167BA]">Days left: {{ daysLeft }}</div>
+        <div class="text-left text-gray-800">Collected {{ currentProject.collected }}/{{ currentProject.goal }}</div>
+        <div class="text-right text-gray-800">Days left: {{ daysLeft }}</div>
       </div>
     </div>
 
