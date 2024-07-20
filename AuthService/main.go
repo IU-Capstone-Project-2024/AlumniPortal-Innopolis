@@ -21,7 +21,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://alumni-inno.netlify.app", "10.244.50.53"},
+		AllowOrigins:     []string{"https://alumni-inno.netlify.app"},
 		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
 		AllowCredentials: true,
