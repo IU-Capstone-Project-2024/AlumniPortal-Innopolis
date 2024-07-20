@@ -24,7 +24,7 @@ func main() {
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"https://alumni-inno.netlify.app"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowHeaders:     []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
@@ -54,15 +54,4 @@ func main() {
 		return
 	}
 	logrus.Info("HTTPS Auth Service started")
-
-	httpPort := ":8091"
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		logrus.Infof("Redirecting request from %s to https://%s:8081%s", r.Host, r.Host, r.RequestURI)
-		http.Redirect(w, r, "https://"+r.Host+":8081"+r.RequestURI, http.StatusMovedPermanently)
-	})
-	if err := http.ListenAndServe(httpPort, nil); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		logrus.Fatal("Failed to start HTTP server for Auth Service:", err)
-		panic(err)
-	}
-	logrus.Info("HTTP Auth Service started")
 }
