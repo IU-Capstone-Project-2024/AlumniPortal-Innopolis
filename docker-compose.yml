@@ -7,17 +7,24 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.websecure.http.tls.certresolver=selfsigned"
     ports:
       - "80:80"
       - "8080:8080"
+      - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./certs:/certs"
     networks:
       - web
     labels:
       - "traefik.http.routers.traefik.rule=PathPrefix(`/traefik`)"
       - "traefik.http.middlewares.traefik-auth.stripprefix.prefixes=/traefik"
       - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=selfsigned"
 
   auth-service:
     build:
@@ -27,13 +34,19 @@ services:
       danyadrakon/auth-service:latest
     volumes:
       - ./shared:/app/shared
+      - ./certs:/certs
     environment:
       - DB=${DB}
       - SECRET=${SECRET}
       - PORT=${PORT}
+      - CERTIFICATE=${CERTIFICATE}
+      - CERTIFICATEKEY=${CERTIFICATEKEY}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.auth-service.rule=PathPrefix(`/auth`)"
+      - "traefik.http.routers.auth-service.entrypoints=websecure"
+      - "traefik.http.routers.auth-service.tls=true"
+      - "traefik.http.routers.auth-service.tls.certresolver=selfsigned"
       - "traefik.http.services.auth-service.loadbalancer.server.port=8081"
     networks:
       - web
