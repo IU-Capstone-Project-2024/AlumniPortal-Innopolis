@@ -36,7 +36,8 @@ export default defineNuxtConfig({
     '@': resolve(__dirname, '/')
   },
   css: [
-    '~/assets/main.scss'
+    '~/assets/main.scss',
+    '@fortawesome/fontawesome-svg-core/styles.css'
   ],
   postcss: {
     plugins: {

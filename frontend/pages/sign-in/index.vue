@@ -1,7 +1,7 @@
 <template>
   <div class="bg-[url(~/assets/inno.png)] bg-cover w-screen h-screen flex items-center justify-center">
     <div class="wrapper">
-      <Form @submit="submitHandler" class="form">
+      <Form @submit.prevent="submitHandler" class="form">
         <h2 class="title font-montserrat">Sign in</h2>
 
         <div class="field">
@@ -71,10 +71,42 @@ const { handleSubmit, values, errors } = useForm({
   validationSchema,
 });
 
-const submitHandler = handleSubmit((values) => {
+const snubmitHandler = handleSubmit((values) => {
   console.log(values);
 });
 
+const submitHandler = handleSubmit(async (values) => {
+  try {
+    const response = await fetch('http://158.160.145.1/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: values.login,
+        password: values.password
+      })
+    })
+
+    if (response.ok) {
+      // Read and process all headers (including possibly forbidden headers)
+      const authHeader = response.headers.get('Authorization');
+      if (authHeader) {
+        const token = authHeader.split(' ')[1];
+        console.log('JWT Token:', token);
+        // Save the token in localStorage or store it in a state management system
+        localStorage.setItem('token', token);
+      } else {
+        console.error('Authorization header not found');
+      }
+    } else {
+      const errorData = await response.json();
+      console.error('Login failed', errorData);
+    }
+  } catch (error) {
+    console.error('Login error', error);
+  }
+})
 const navigateToSignUp = () => {
   router.push('/sign-up');
 };

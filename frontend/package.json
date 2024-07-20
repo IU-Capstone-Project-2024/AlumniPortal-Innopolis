@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@formkit/nuxt": "^1.6.5",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
+    "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "@pinia/nuxt": "^0.5.1",
     "@vee-validate/nuxt": "^4.13.2",
     "@vee-validate/yup": "^4.13.2",
