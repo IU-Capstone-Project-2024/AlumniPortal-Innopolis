@@ -21,11 +21,11 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://alumni-inno.netlify.app"},
-		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
-		AllowHeaders:     []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
-		AllowCredentials: true,
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{"POST", "PUT", "PATCH", "DELETE"},
+		AllowHeaders: []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
 	}))
+
 
 	r.ForwardedByClientIP = true
 	if r.SetTrustedProxies([]string{"127.0.0.1"}) != nil {
