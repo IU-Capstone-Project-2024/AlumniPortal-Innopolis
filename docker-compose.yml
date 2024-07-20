@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   traefik:
     image: traefik:latest
@@ -7,6 +5,8 @@ services:
       - "--api.insecure=true"
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls.certresolver=selfsigned"
     ports:
