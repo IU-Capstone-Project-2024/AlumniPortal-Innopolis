@@ -65,4 +65,6 @@ func main() {
 		}
 		logrus.Info("HTTP Auth Service started")
 	}()
+
+	logrus.Info("Check")
 }
