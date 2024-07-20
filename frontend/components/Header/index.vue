@@ -1,8 +1,8 @@
 <template>
     <div :class="[route.name == 'sign-in' || route.name =='sign-up' ? 'bg-opacity-75 bg-white !dark:bg-opacity-75 dark:bg-black' : 'bg-opacity-20 bg-white dark:!bg-black dark:!bg-opacity-20', route.name !== 'sign-in' && route.name !== 'sign-up' && route.name !== 'index' ? '!bg-[#40BA21] !bg-opacity-10' : '']"
         class="header flex items-center h-15 justify-between p-6 absolute top-0 left-0 w-screen z-10">
-        <HeaderLogo v-show="!mobile" />
-        <ul v-show="!mobile" class="flex gap-4 font-ibm">
+        <HeaderLogo />
+        <ul v-show="!config.getMobile" class="flex gap-4 font-ibm">
             <li>
                 <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/">Home</NuxtLink>
             </li>
@@ -22,8 +22,8 @@
                 <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/sign-in">Sign In</NuxtLink>
             </li>
         </ul>
-        <div v-show="mobile" class="icon" :class="{ 'icon-active': mobileNav }">
-          <font-awesome-icon @click="toggleMobileNav" v-show="mobile" icon="fa-solid fa-bars" />
+        <div v-show="config.getMobile" class="icon" :class="{ 'icon-active': mobileNav }">
+          <font-awesome-icon @click="toggleMobileNav" v-show="config.getMobile" icon="fa-solid fa-bars" />
         </div>
         <transition name="mobile-nav">
           <ul v-show="mobileNav" class="dropdown-nav flex flex-col gap-4 font-ibm">
@@ -51,11 +51,13 @@
 </template>
 <script setup>
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
+import {useConfigStore} from "~/stores/configStore.js";
 
 const route = useRoute()
-const mobile = ref(true)
 const mobileNav = ref(false)
-const windowWidth = ref(null)
+const windowWidth = ref(NaN)
+
+const config = useConfigStore()
 
 const toggleMobileNav = () => {
   mobileNav.value = !mobileNav.value
@@ -74,10 +76,10 @@ onBeforeRouteLeave((to, from, next) => {
 const checkScreen = () => {
   windowWidth.value = window.innerWidth
   if (windowWidth.value <=750) {
-    mobile.value = true
+    config.enableMobile()
     return
   }
-  mobile.value = false
+  config.disableMobile()
   mobileNav.value = false
 }
 
@@ -100,7 +102,7 @@ const checkScreen = () => {
   height: 100%
   background-color: white
   top: 0
-  right: 0
+  left: 0
   li
     margin-left: 0
     .link
