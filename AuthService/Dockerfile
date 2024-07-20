@@ -18,6 +18,5 @@ RUN go build -o main .
 RUN chmod +x /app/main
 
 EXPOSE 8081
-EXPOSE 8091
 
 CMD ["./main"]
