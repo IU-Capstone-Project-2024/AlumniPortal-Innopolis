@@ -47,6 +47,11 @@ services:
       - "traefik.http.routers.auth-service.entrypoints=websecure"
       - "traefik.http.routers.auth-service.tls=true"
       - "traefik.http.routers.auth-service.tls.certresolver=selfsigned"
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowOriginList=https://alumni-inno.netlify.app"
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowMethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowHeaders=Content-Type,Authorization"
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlExposeHeaders=Content-Length"
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowCredentials=true"
       - "traefik.http.services.auth-service.loadbalancer.server.port=8081"
     networks:
       - web
