@@ -77,7 +77,7 @@ const snubmitHandler = handleSubmit((values) => {
 
 const submitHandler = handleSubmit(async (values) => {
   try {
-    const response = await fetch('http://158.160.145.1/auth/login', {
+    const response = await fetch('https://158.160.145.1:443/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
