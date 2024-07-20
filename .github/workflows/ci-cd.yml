@@ -19,6 +19,7 @@ jobs:
         ports:
           - 80:80
           - 8080:8080
+          - 443:443
 
     env:
       DB: ${{ secrets.DB }}
@@ -29,6 +30,8 @@ jobs:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
       SSH_HOST: ${{ secrets.SSH_HOST }}
+      CERTIFICATE: ${{ secrets.CERTIFICATE }}
+      CERTIFICATEKEY: ${{ secrets.CERTIFICATEKEY }}
       GITHUB_ACTIONS: true
       
     steps:
@@ -46,7 +49,13 @@ jobs:
 
       - name: Create 'web' network
         run: docker network create web || true
-      
+
+      - name: Upload Certificates
+        run: |
+          mkdir -p certs
+          echo "${{ secrets.CERTIFICATE }}" > certs/selfsigned.crt
+          echo "${{ secrets.CERTIFICATEKEY }}" > certs/selfsigned.key
+
       - name: Build and push Docker images
         run: docker-compose build
 
@@ -77,7 +86,7 @@ jobs:
             EOF
 
       - name: Wait for services to be ready
-        run: sleep 200
+        run: sleep 15
 
       - name: Validate deployment
         run: |
