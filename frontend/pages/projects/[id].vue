@@ -19,11 +19,11 @@
     </div>
 
 
-    <div class="container flex justify-between">
+    <div class="container flex flex-col sm:flex-row justify-between">
       <UIDonationForm />
-      <div class="container flex flex-col">
-        <span class="wrapper ml-5">ranking</span>
-        <span class="wrapper ml-5 mt-5">ranking</span>
+      <div class="container mt-5 sm:mt-0 flex flex-col">
+        <span class="wrapper sm:ml-5">ranking</span>
+        <span class="wrapper sm:ml-5 mt-5">ranking</span>
       </div>
     </div>
   </div>

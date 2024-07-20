@@ -1,9 +1,9 @@
 <template>
   <div class="wrapper">
-    <Form @submit="submitHandler" class="form">
+    <Form @submit="submitHandler" class="form grid-cols-1">
       <h2 class="title font-montserrat">Make a Donation</h2>
       
-      <div class="field">
+      <div class="field col-span-2 sm:col-span-1">
         <label for="firstName" class="label font-ibm">First Name</label>
         <Field
           name="firstName"
@@ -15,7 +15,7 @@
         <ErrorMessage name="firstName" class="error-message font-ibm" />
       </div>
 
-      <div class="field">
+      <div class="field col-span-2 sm:col-span-1">
         <label for="lastName" class="label font-ibm">Last Name</label>
         <Field
           name="lastName"
@@ -27,7 +27,7 @@
         <ErrorMessage name="lastName" class="error-message font-ibm" />
       </div>
 
-      <div class="field">
+      <div class="field col-span-2 sm:col-span-1">
         <label for="email" class="label font-ibm">E-mail</label>
         <Field
           name="email"
@@ -39,7 +39,7 @@
         <ErrorMessage name="email" class="font-ibm error-message" />
       </div>
 
-      <div class="field">
+      <div class="field col-span-2 sm:col-span-1">
         <label for="phone" class="label font-ibm">Phone number</label>
         <Field
           name="phone"
@@ -51,7 +51,7 @@
         <ErrorMessage name="phone" class="font-ibm error-message" />
       </div>
 
-      <div class="field">
+      <div class="field col-span-2 sm:col-span-1">
         <label for="amount" class="label font-ibm">Amount</label>
         <Field
           name="amount"
@@ -63,7 +63,7 @@
         <ErrorMessage name="amount" class="error-message font-ibm" />
       </div>
 
-      <div class="field">
+      <div class="field col-span-2 sm:col-span-1">
         <label for="paymentMethod" class="label font-ibm">Choose the payment method</label>
         <Field
           name="paymentMethod"
@@ -77,7 +77,7 @@
         <ErrorMessage name="paymentMethod" class="error-message font-ibm" />
       </div>
 
-      <div class="field full-width">
+      <div class="field col-span-2 sm:col-span-1 full-width">
         <label for="recurringDonation" class="label font-ibm">Recurring donation</label>
         <Field
           name="recurringDonation"
