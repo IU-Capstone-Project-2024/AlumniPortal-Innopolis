@@ -8,10 +8,11 @@ services:
       - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.websecure.http.tls.certresolver=selfsigned"
+      - "--entrypoints.websecure.http.tls=true"
+      - "--entrypoints.websecure.http.tls.certificates.certFile=/certs/selfsigned.crt"
+      - "--entrypoints.websecure.http.tls.certificates.keyFile=/certs/selfsigned.key"
     ports:
       - "80:80"
-      - "8080:8080"
       - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
@@ -24,7 +25,6 @@ services:
       - "traefik.http.routers.traefik.middlewares=traefik-auth"
       - "traefik.http.routers.traefik.entrypoints=websecure"
       - "traefik.http.routers.traefik.tls=true"
-      - "traefik.http.routers.traefik.tls.certresolver=selfsigned"
 
   auth-service:
     build:
@@ -42,19 +42,19 @@ services:
       - CERTIFICATE=${CERTIFICATE}
       - CERTIFICATEKEY=${CERTIFICATEKEY}
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth-service.rule=PathPrefix(`/auth`)"
-      - "traefik.http.routers.auth-service.entrypoints=websecure"
-      - "traefik.http.routers.auth-service.tls=true"
-      - "traefik.http.routers.auth-service.tls.certresolver=selfsigned"
-      - "traefik.http.middlewares.auth-service-redirect-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.auth-service.middlewares=auth-service-redirect-https"
-      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowOriginList=https://alumni-inno.netlify.app"
+      - "traefik.enable=true"  # Enable Traefik for this service
+      - "traefik.http.routers.auth-service.rule=PathPrefix(`/auth`)"  # Route requests with /auth prefix
+      - "traefik.http.routers.auth-service.entrypoints=websecure"  # Use HTTPS entry point
+      - "traefik.http.routers.auth-service.tls=true"  # Enable TLS for this router
+      - "traefik.http.middlewares.auth-service-redirect-https.redirectscheme.scheme=https"  # Redirect HTTP to HTTPS
+      - "traefik.http.routers.auth-service.middlewares=auth-service-redirect-https"  # Apply HTTPS redirection middleware
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowOriginList=https://alumni-inno.netlify.app"  # CORS settings
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowMethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowHeaders=Content-Type,Authorization"
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlExposeHeaders=Content-Length"
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowCredentials=true"
-      - "traefik.http.services.auth-service.loadbalancer.server.port=8081"
+      - "traefik.http.routers.auth-service.middlewares=auth-service-cors"  # Apply CORS middleware
+      - "traefik.http.services.auth-service.loadbalancer.server.port=8081"  # Service port
     networks:
       - web
     logging:
