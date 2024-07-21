@@ -18,8 +18,11 @@
             <li v-if="route.name != 'sign-in' && route.name != 'sign-up'">
                 <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/offers">Offers</NuxtLink>
             </li>
-            <li>
+            <li v-if="!auth.user">
                 <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/sign-in">Sign In</NuxtLink>
+            </li>
+            <li v-else>
+              <span>Sign Out</span>
             </li>
         </ul>
         <div v-show="config.getMobile" class="icon" :class="{ 'icon-active': mobileNav }">
@@ -52,8 +55,10 @@
 <script setup>
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {useConfigStore} from "~/stores/configStore.js";
+import { useAuthStore } from "~/stores/authStore.js";
 
 const route = useRoute()
+const auth = useAuthStore()
 const mobileNav = ref(false)
 const windowWidth = ref(NaN)
 

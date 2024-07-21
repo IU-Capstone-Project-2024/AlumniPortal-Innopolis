@@ -61,7 +61,7 @@ import { useForm, ErrorMessage, Field } from 'vee-validate';
 import * as yup from 'yup';
 
 const router = useRouter();
-import { useAuthStore } from 'stores/authStore.js'
+import { useAuthStore } from '~/stores/authStore.js'
 const auth = useAuthStore()
 const validationSchema = yup.object({
   login: yup.string().email('Must be a valid email').required('Email is required'),

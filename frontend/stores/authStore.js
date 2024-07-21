@@ -7,8 +7,9 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async login(email, password) {
             try {
-                const response = await fetch('https://alumni-portal.ru/auth/login', {
+                const response = await fetch('https://api.alumni-portal.ru/auth/login', {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -17,7 +18,7 @@ export const useAuthStore = defineStore('auth', {
 
                 if (response.ok) {
                     const data = await response.json();
-                    this.user = data.user;
+                    this.user = data;
                     return data;
                 } else {
                     const errorData = await response.json();
