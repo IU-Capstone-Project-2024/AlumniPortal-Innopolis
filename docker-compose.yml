@@ -1,39 +1,53 @@
+version: '3'
+
+networks:
+  web:
+    external: true
+
 services:
   traefik:
     image: traefik:latest
     command:
       - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--api.debug=true"
       - "--providers.docker=true"
+      - "--providers.docker.network=web"
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--entrypoints.websecure.address=:443"
       - "--entrypoints.websecure.http.tls=true"
-      - "--entrypoints.websecure.http.tls.certificates.certFile=/certs/selfsigned.crt"
-      - "--entrypoints.websecure.http.tls.certificates.keyFile=/certs/selfsigned.key"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--certificatesResolvers.myresolver.acme.tlsChallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=d.vasilev@innopolis.university"
+      - "--certificatesResolvers.myresolver.acme.storage=/letsencrypt/acme.json"
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./certs:/certs"
+      - "./letsencrypt/acme.json:/letsencrypt/acme.json"
     networks:
       - web
     labels:
-      - "traefik.http.routers.traefik.rule=PathPrefix(`/traefik`)"
-      - "traefik.http.middlewares.traefik-auth.stripprefix.prefixes=/traefik"
-      - "traefik.http.routers.traefik.middlewares=traefik-auth"
-      - "traefik.http.routers.traefik.entrypoints=websecure"
-      - "traefik.http.routers.traefik.tls=true"
-      
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+      - "traefik.http.routers.http-catchall.entrypoints=web"
+      - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+      - "traefik.http.routers.web.rule=Host(`alumni-portal.ru`)"
+      - "traefik.http.routers.web.entrypoints=websecure"
+      - "traefik.http.routers.web.tls=true"
+      - "traefik.http.routers.web.tls.certresolver=myresolver"
+
   auth-service:
     build:
       context: .
       dockerfile: AuthService/Dockerfile
-    image: danyadrakon/auth-service:latest
+    image:
+      danyadrakon/auth-service:latest
     volumes:
       - ./shared:/app/shared
+      - ./certs:/certs
     environment:
       - DB=${DB}
       - SECRET=${SECRET}
@@ -41,19 +55,20 @@ services:
       - CERTIFICATE=${CERTIFICATE}
       - CERTIFICATEKEY=${CERTIFICATEKEY}
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.auth-service.rule=PathPrefix(`/auth`)"
-      - "traefik.http.routers.auth-service.entrypoints=websecure"
+      - "traefik.enable=true"  # Enable Traefik for this service
+      - "traefik.http.routers.auth-service.rule=PathPrefix(`/auth`)"  # Route requests with /auth prefix
+      - "traefik.http.routers.auth-service.entrypoints=websecure"  # Use HTTPS entry point
       - "traefik.http.routers.auth-service.tls=true"
-      - "traefik.http.middlewares.auth-service-redirect-https.redirectscheme.scheme=https"
-      - "traefik.http.routers.auth-service.middlewares=auth-service-redirect-https"
-      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowOriginList=https://alumni-inno.netlify.app"
+      - "traefik.http.routers.auth-service.tls.certresolver=myresolver"
+      - "traefik.http.middlewares.auth-service-redirect-https.redirectscheme.scheme=https"  # Redirect HTTP to HTTPS
+      - "traefik.http.routers.auth-service.middlewares=auth-service-redirect-https"  # Apply HTTPS redirection middleware
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowOriginList=https://alumni-inno.netlify.app"  # CORS settings
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowMethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowHeaders=Content-Type,Authorization"
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlExposeHeaders=Content-Length"
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowCredentials=true"
-      - "traefik.http.routers.auth-service.middlewares=auth-service-cors"
-      - "traefik.http.services.auth-service.loadbalancer.server.port=8081"
+      - "traefik.http.routers.auth-service.middlewares=auth-service-cors"  # Apply CORS middleware
+      - "traefik.http.services.auth-service.loadbalancer.server.port=8081"  # Service port
     networks:
       - web
     logging:
