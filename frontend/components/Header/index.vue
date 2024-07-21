@@ -22,7 +22,7 @@
                 <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/sign-in">Sign In</NuxtLink>
             </li>
             <li v-else>
-              <span class="link hover:text-[#40BA21] font-ibm dark:text-white" @click="auth.logout">Sign Out</span>
+              <span class="link hover:text-[#40BA21] font-ibm dark:text-white hover:cursor-pointer" @click="auth.logout">Sign Out</span>
             </li>
         </ul>
         <div v-show="config.getMobile" class="icon" :class="{ 'icon-active': mobileNav }">

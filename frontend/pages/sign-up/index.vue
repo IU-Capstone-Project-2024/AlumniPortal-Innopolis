@@ -51,6 +51,18 @@
           />
           <ErrorMessage name="password" class="error-message font-ibm" />
         </div>
+        <div class="field">
+          <label for="role" class="label font-ibm">Role</label>
+          <Field
+              name="role"
+              as="select"
+              :class="['select', 'font-ibm', { valid: !errors.role && values.role }]"
+          >
+            <option value="Student">Student</option>
+            <option value="Alumni">Alumnus</option>
+          </Field>
+          <ErrorMessage name="role" class="error-message font-ibm" />
+        </div>
 
         <div>
           <UIButton
@@ -75,7 +87,8 @@ const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
   lastname: yup.string().required('Lastname is required'),
   login: yup.string().email('Must be a valid email').required('Email is required'),
-  password: yup.string().required('Password is required')
+  password: yup.string().required('Password is required'),
+  role: yup.string().required('Role is required')
 });
 
 const { handleSubmit, values, errors } = useForm({
@@ -92,6 +105,7 @@ const submitHandler = handleSubmit(async (values) => {
         lastName: values.lastname,
         email: values.login,
         password: values.password,
+        role: values.role,
       }),
     })
 
@@ -143,7 +157,7 @@ const navigateToSignIn = () => {
     font-weight: 500
     color: #4A5568
 
-  .input
+  .input, .select
     margin-top: 0.25rem
     width: 100%
     padding: 0.5rem 1rem
