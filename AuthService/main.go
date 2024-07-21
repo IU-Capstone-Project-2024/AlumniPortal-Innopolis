@@ -29,7 +29,6 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-
 	r.ForwardedByClientIP = true
 	if r.SetTrustedProxies([]string{"127.0.0.1"}) != nil {
 		panic("SetTrustedProxies failed")
@@ -40,17 +39,15 @@ func main() {
 
 	logrus.Info("Starting Auth Service")
 
-	certFile := "certs/selfsigned.crt"
-	keyFile := "certs/selfsigned.key"
-
-	httpsServer := &http.Server{
+	// Run the service on HTTP, Traefik will handle HTTPS termination
+	httpServer := &http.Server{
 		Addr:    ":8081",
 		Handler: r,
 	}
 
-	if err := httpsServer.ListenAndServeTLS(certFile, keyFile); err != nil && err != http.ErrServerClosed {
-		logrus.Fatal("Failed to start HTTPS Auth Service:", err)
+	if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logrus.Fatal("Failed to start HTTP Auth Service:", err)
 		return
 	}
-	logrus.Info("HTTPS Auth Service started")
+	logrus.Info("HTTP Auth Service started")
 }
