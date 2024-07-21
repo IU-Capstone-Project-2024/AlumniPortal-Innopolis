@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
 	"alumniportal.com/shared/models"
 	"github.com/gin-gonic/gin"
@@ -38,7 +39,7 @@ func Verify(c *gin.Context) {
 		return
 	}
 
-	user.Verified = true
+	user.Verified = helpers.VerifiedUser
 
 	if err := initializers.DB.Save(&user).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
