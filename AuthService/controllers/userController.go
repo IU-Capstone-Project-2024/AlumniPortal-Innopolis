@@ -142,10 +142,10 @@ func Login(c *gin.Context) {
                 "lastName":                   user.LastName,
                 "email":                      user.Email,
                 "specialization":             user.Specialization,
-                "AvailableCustomerInterview": user.AvailableCustdev,
-                "Description":                user.Description,
-                "PortfolioLink":              user.PortfolioLink,
-                "SocialsLink":                user.SocialsLink,
+                "availableCustomerInterview": user.AvailableCustdev,
+                "description":                user.Description,
+                "portfolioLink":              user.PortfolioLink,
+                "socialsLink":                user.SocialsLink,
                 "role":                       role,
         })
 
@@ -184,15 +184,34 @@ func GetInfo(c *gin.Context) {
         logrus.WithFields(logrus.Fields{
                 "user_id": user.(models.User).ID,
         }).Info("User info retrieved successfully")
+
+        var role string
+        
+        if user.(models.User).IsAdmin && user.(models.User).Verified {
+                role = "Admin"
+        } else {
+                if user.(models.User).IsAlumni && user.(models.User).Verified {
+                        role = "Alumni"
+                } else {
+                        if user.(models.User).Verified {
+                                role = "Student"
+                        } else {
+                                role = "Unverified"
+                        }
+                }
+        }
+        
         c.JSON(http.StatusOK, gin.H{
-                "Name":           user.(models.User).Name,
-                "LastName":       user.(models.User).LastName,
-                "Email":          user.(models.User).Email,
-                "Role":           user.(models.User).Role,
-                "Specialization": user.(models.User).Specialization,
-                "Portfolio":      user.(models.User).PortfolioLink,
-                "Socials":        user.(models.User).SocialsLink,
-                "IsAlumni":       user.(models.User).IsAlumni,
-                "IsAdmin":        user.(models.User).IsAdmin,
+                "userId":                         user.(models.User).ID,
+                "name":                           user.(models.User).Name,
+                "lastName":                       user.(models.User).LastName,
+                "email":                          user.(models.User).Email,
+                "role":                           role,
+                "specialization":                 user.(models.User).Specialization,
+                "availableCustomerInterview":     user.(models.User).AvailableCustdev,
+                "portfolioLink":                  user.(models.User).PortfolioLink,
+                "socialsLink":                    user.(models.User).SocialsLink,
+                "isAlumni":                       user.(models.User).IsAlumni,
+                "isAdmin":                        user.(models.User).IsAdmin,
         })
 }
