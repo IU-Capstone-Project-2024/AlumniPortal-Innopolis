@@ -171,6 +171,25 @@ const navigateToSignIn = () => {
     &.valid
       border-color: #40BA21
 
+.select 
+  appearance: none
+  background-color: white
+  border: 1px solid #D1D5DB
+  border-radius: 0.375rem
+  padding: 0.5rem 1rem
+  line-height: 1.5
+  color: #40BA21
+  background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23999" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>')
+  background-repeat: no-repeat
+  background-position: right 0.5rem center
+  background-size: 1em
+  &:focus 
+    border-color: #40BA21
+    box-shadow: 0 0 0 1px #40BA21
+  &::-ms-expand 
+    display: none
+  
+
   .error-message
     color: #F56565
     font-size: 0.75rem
