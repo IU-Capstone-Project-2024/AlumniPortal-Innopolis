@@ -38,6 +38,11 @@ services:
       - "traefik.http.routers.web.entrypoints=websecure"
       - "traefik.http.routers.web.tls=true"
       - "traefik.http.routers.web.tls.certresolver=myresolver"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.alumni-portal.ru`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=myresolver"
 
   auth-service:
     build:
@@ -56,7 +61,7 @@ services:
       - CERTIFICATEKEY=${CERTIFICATEKEY}
     labels:
       - "traefik.enable=true"  # Enable Traefik for this service
-      - "traefik.http.routers.auth-service.rule=PathPrefix(`/auth`)"  # Route requests with /auth prefix
+      - "traefik.http.routers.auth-service.rule=Host(`alumni-portal.ru`) && PathPrefix(`/auth`)"
       - "traefik.http.routers.auth-service.entrypoints=websecure"  # Use HTTPS entry point
       - "traefik.http.routers.auth-service.tls=true"
       - "traefik.http.routers.auth-service.tls.certresolver=myresolver"
