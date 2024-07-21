@@ -56,6 +56,11 @@ jobs:
           echo "${{ secrets.CERTIFICATE }}" > certs/selfsigned.crt
           echo "${{ secrets.CERTIFICATEKEY }}" > certs/selfsigned.key
 
+      - name: ACME init
+        run: |
+          touch acme.json
+          chmod 600 acme.json
+          
       - name: Build and push Docker images
         run: docker-compose build
 
@@ -76,7 +81,7 @@ jobs:
       - name: Copy files to the server
         run: |
           rsync -avz -e "ssh -o StrictHostKeyChecking=no" --exclude='.git' --exclude='node_modules' ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/home/${{ secrets.SSH_USERNAME }}/capstone/AlumniPortal-Innopolis
-      
+          
       - name: Deploy with docker-compose on remote server
         run: |
             ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
