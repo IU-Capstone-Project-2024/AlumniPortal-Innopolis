@@ -18,5 +18,6 @@ func SetupRouter(route *gin.Engine) {
 	{
 		protected.GET("validate", controllers.Validate)
 		protected.GET("user", controllers.GetInfo)
+		protected.POST("logout", controllers.Logout)
 	}
 }

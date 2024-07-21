@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
 	"alumniportal.com/shared/models"
 	"fmt"
@@ -67,20 +68,14 @@ func RequireStudent(c *gin.Context) {
 	}
 
 	authenticatedUser := user.(models.User)
-	if !authenticatedUser.Verified {
+	if authenticatedUser.Verified != helpers.VerifiedUser {
 		logrus.Warn("User is not verified")
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 
-	if authenticatedUser.IsAlumni {
-		logrus.Warn("User is alumni")
-		c.AbortWithStatus(http.StatusForbidden)
-		return
-	}
-
-	if authenticatedUser.IsAdmin {
-		logrus.Warn("User is admin")
+	if authenticatedUser.Role != helpers.Student {
+		logrus.Warn("User is not student")
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
