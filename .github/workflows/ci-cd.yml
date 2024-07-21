@@ -49,12 +49,6 @@ jobs:
 
       - name: Create 'web' network
         run: docker network create web || true
-
-      - name: Upload Certificates
-        run: |
-          mkdir -p certs
-          echo "${{ secrets.CERTIFICATE }}" > certs/selfsigned.crt
-          echo "${{ secrets.CERTIFICATEKEY }}" > certs/selfsigned.key
           
       - name: Build and push Docker images
         run: docker-compose build
