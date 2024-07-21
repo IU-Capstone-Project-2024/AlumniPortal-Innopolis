@@ -114,6 +114,22 @@ services:
         max-size: "200k"
         max-file: "10"
 
+  filtering-service:
+    build:
+      context: .
+      dockerfile: FilteringService/Dockerfile
+    image:
+      danyadrakon/filtering-service:latest
+    volumes:
+      - ./shared:/app/shared
+    environment:
+      - API_KEY=${API_KEY}
+      - OPENAI_KEY=${OPENAI_KEY}
+    networks:
+      - web
+    ports:
+      - "50051:50051"
+
   requests-service:
     build:
       context: .
@@ -161,27 +177,6 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
-
-  filtering-service:
-    build:
-      context: .
-      dockerfile: FilteringService/Dockerfile
-    image:
-      danyadrakon/filtering-service:latest
-    volumes:
-      - ./shared:/app/shared
-    environment:
-      - DB=${DB}
-      - SECRET=${SECRET}
-      - PORT=${PORT}
-    networks:
-      - web
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "200k"
-        max-file: "10"
-
 
   event-service:
     build:

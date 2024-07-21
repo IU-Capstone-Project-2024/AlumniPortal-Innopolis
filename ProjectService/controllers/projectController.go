@@ -55,16 +55,7 @@ func CreateProject(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create gRPC client"})
 		return
 	}
-	defer func(conn *grpc.ClientConn) {
-		err := conn.Close()
-		if err != nil {
-			logrus.WithFields(logrus.Fields{
-				"error": err.Error(),
-			}).Error("Failed to close gRPC client connection")
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create gRPC client"})
-			return
-		}
-	}(conn)
+	defer conn.Close()
 
 	req := &pb.GradeRequest{
 		Description: projectRequest.Description,

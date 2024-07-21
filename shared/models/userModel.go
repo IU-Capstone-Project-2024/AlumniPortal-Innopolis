@@ -13,7 +13,7 @@ type User struct {
 	AvailableCustdev bool `gorm:"default:false"`
 	LastName         string
 	Description      string
-	Verified         helpers.VerificationUserStatus `gorm:"not null;default:'UnverifiedUser'"`
+	Verified         helpers.VerificationUserStatus `gorm:"not null;default:false"`
 	PortfolioLink    string
 	SocialsLink      string
 	Email            string `gorm:"unique"`
