@@ -11,7 +11,6 @@ RUN go mod download
 
 COPY AuthService/ .
 COPY shared/ ./shared
-COPY certs ./certs
 
 RUN go build -o main .
 
