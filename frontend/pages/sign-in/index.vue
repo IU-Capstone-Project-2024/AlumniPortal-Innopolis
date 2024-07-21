@@ -61,7 +61,8 @@ import { useForm, ErrorMessage, Field } from 'vee-validate';
 import * as yup from 'yup';
 
 const router = useRouter();
-
+import { useAuthStore } from 'stores/authStore.js'
+const auth = useAuthStore()
 const validationSchema = yup.object({
   login: yup.string().email('Must be a valid email').required('Email is required'),
   password: yup.string().required('Password is required')
@@ -71,41 +72,9 @@ const { handleSubmit, values, errors } = useForm({
   validationSchema,
 });
 
-const snubmitHandler = handleSubmit((values) => {
-  console.log(values);
-});
-
 const submitHandler = handleSubmit(async (values) => {
-  try {
-    const response = await fetch('https://158.160.145.1:443/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: values.login,
-        password: values.password
-      })
-    })
-
-    if (response.ok) {
-      // Read and process all headers (including possibly forbidden headers)
-      const authHeader = response.headers.get('Authorization');
-      if (authHeader) {
-        const token = authHeader.split(' ')[1];
-        console.log('JWT Token:', token);
-        // Save the token in localStorage or store it in a state management system
-        localStorage.setItem('token', token);
-      } else {
-        console.error('Authorization header not found');
-      }
-    } else {
-      const errorData = await response.json();
-      console.error('Login failed', errorData);
-    }
-  } catch (error) {
-    console.error('Login error', error);
-  }
+  await auth.login(values.login, values.password);
+  await router.push('/')
 })
 const navigateToSignUp = () => {
   router.push('/sign-up');
