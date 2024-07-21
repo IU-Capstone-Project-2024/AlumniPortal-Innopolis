@@ -9,14 +9,14 @@
       <h2 class="text-xl font-semibold font-montserrat text-[#40BA21]">Progress</h2>
     </div>
 
-    <div class="mb-10">
-      <div class="text-left text-gray-800 mb-4">Goal: {{ currentProject.goal + '$'}}</div>
-      <UIProgressBar :collected="currentProject.collected" :goal="currentProject.goal" />
-      <div class="flex justify-between mt-4">
-        <div class="text-left text-gray-800">Collected {{ currentProject.collected }}/{{ currentProject.goal }}</div>
-        <div class="text-right text-gray-800">Days left: {{ daysLeft }}</div>
-      </div>
-    </div>
+<!--    <div class="mb-10">-->
+<!--      <div class="text-left text-gray-800 mb-4">Goal: {{ currentProject.goal || '' + '$'}}</div>-->
+<!--      <UIProgressBar :collected="currentProject.collected || 0" :goal="currentProject.goal || 0" />-->
+<!--      <div class="flex justify-between mt-4">-->
+<!--        <div class="text-left text-gray-800">Collected {{ currentProject.collected  || ''}}/{{ currentProject.goal  || ''}}</div>-->
+<!--        <div class="text-right text-gray-800">Days left: {{ daysLeft }}</div>-->
+<!--      </div>-->
+<!--    </div>-->
 
 
     <div class="container flex flex-col sm:flex-row justify-between">
@@ -37,9 +37,9 @@ import { useProjectStore } from '/stores/projectStore.js'
 import { storeToRefs } from 'pinia'
 const route = useRoute()
 const store = useProjectStore()
-const { projects } = storeToRefs(store)
-const currentProject = ref(null)
-currentProject.value = projects.value.filter(p => p.id == route.params.id)[0]
+// const { projects } = storeToRefs(store)
+// const currentProject = ref(null)
+// currentProject.value = projects.value.filter(p => p.id == route.params.id)[0]
 const daysLeft = 30;
 </script>
 
