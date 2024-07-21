@@ -7,6 +7,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"net/http"
+	"time"
 )
 
 func init() {
@@ -20,9 +22,11 @@ func main() {
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"https://alumni-inno.netlify.app"},
-		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
+		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
 	}))
 
 	// r.Use(middleware.AuthenticateToken())
@@ -37,8 +41,14 @@ func main() {
 
 	logrus.Info("Starting Event Service")
 
-	if err := r.Run(":8084"); err != nil {
-		logrus.Fatal("Error starting Event Service")
-		panic(err)
+	httpServer := &http.Server{
+		Addr:    ":8084",
+		Handler: r,
 	}
+
+	if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logrus.Fatal("Failed to start HTTP Event Service:", err)
+		return
+	}
+	logrus.Info("HTTP Event Service started")
 }

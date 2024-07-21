@@ -5,7 +5,6 @@ WORKDIR /app
 COPY AdditionalRequestService/go.mod AdditionalRequestService/go.sum ./
 
 COPY shared/go.mod shared/
-COPY shared/go.sum shared/
 
 RUN go mod tidy
 RUN go mod download

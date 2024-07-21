@@ -4,11 +4,13 @@ import (
 	"VolunteerService/routes/admin"
 	"VolunteerService/routes/alumni"
 	"VolunteerService/routes/student"
+	"net/http"
 
 	"alumniportal.com/shared/initializers"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 func init() {
@@ -22,9 +24,11 @@ func main() {
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"https://alumni-inno.netlify.app"},
-		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
+		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
 	}))
 
 	// r.Use(middleware.AuthenticateToken())
@@ -40,8 +44,14 @@ func main() {
 
 	logrus.Info("Starting Volunteer Service")
 
-	if err := r.Run(":8086"); err != nil {
-		logrus.Fatal("Error starting Volunteer Service")
-		panic(err)
+	httpServer := &http.Server{
+		Addr:    ":8086",
+		Handler: r,
 	}
+
+	if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logrus.Fatal("Failed to start HTTP Volunteer Service:", err)
+		return
+	}
+	logrus.Info("HTTP Volunteer Service started")
 }

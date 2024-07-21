@@ -14,6 +14,7 @@ import (
 type ProjectInput struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description" binding:"required"`
+	Goal        int    `json:"goal" binding:"required"`
 }
 
 var filteringServiceAddress = "filtering-service:50051"
@@ -42,6 +43,7 @@ func CreateProject(c *gin.Context) {
 		FounderID:   user.(sharedModels.User).ID,
 		Name:        input.Name,
 		Description: input.Description,
+		Goal:        input.Goal,
 		Status:      helpers.Unverified,
 	}
 
@@ -92,7 +94,19 @@ func CreateProject(c *gin.Context) {
 		"user_id":    user.(sharedModels.User).ID,
 		"project_id": projectRequest.ID,
 	}).Info("Project created successfully")
-	c.JSON(http.StatusOK, projectRequest)
+
+	var resultingProjectResponse sharedModels.Project
+
+	if err := initializers.DB.Where("id = ?", projectRequest.ID).Preload("User").First(&resultingProjectResponse).Error; err != nil {
+		logrus.WithFields(logrus.Fields{
+			"project_id": projectRequest.ID,
+			"error":      err.Error(),
+		}).Error("Failed to get created project")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Project": resultingProjectResponse})
 }
 
 func DeleteProject(c *gin.Context) {
@@ -182,9 +196,10 @@ func UpdateProject(c *gin.Context) {
 	updateData := sharedModels.Project{
 		Name:        input.Name,
 		Description: input.Description,
+		Goal:        input.Goal,
 	}
 
-	if err := initializers.DB.Model(&project).Updates(updateData).Error; err != nil {
+	if err := initializers.DB.Model(&project).Preload("User").Updates(updateData).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
 		}).Error("Failed to update project")
@@ -229,6 +244,7 @@ func UpdateProjectAdmin(c *gin.Context) {
 	updateData := sharedModels.Project{
 		Name:        input.Name,
 		Description: input.Description,
+		Goal:        input.Goal,
 	}
 
 	if err := initializers.DB.Model(&project).Updates(updateData).Error; err != nil {
