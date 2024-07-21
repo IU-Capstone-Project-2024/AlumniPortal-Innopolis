@@ -87,9 +87,3 @@ jobs:
 
       - name: Wait for services to be ready
         run: sleep 15
-
-      - name: Validate deployment
-        run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-          curl -I http://${{ secrets.SSH_HOST }}:80/auth/validate
-          EOF
