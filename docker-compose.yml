@@ -52,13 +52,10 @@ services:
       danyadrakon/auth-service:latest
     volumes:
       - ./shared:/app/shared
-      - ./certs:/certs
     environment:
       - DB=${DB}
       - SECRET=${SECRET}
       - PORT=${PORT}
-      - CERTIFICATE=${CERTIFICATE}
-      - CERTIFICATEKEY=${CERTIFICATEKEY}
     labels:
       - "traefik.enable=true"  # Enable Traefik for this service
       - "traefik.http.routers.auth-service.rule=Host(`api.alumni-portal.ru`) && PathPrefix(`/auth`)"
@@ -74,6 +71,41 @@ services:
       - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowCredentials=true"
       - "traefik.http.routers.auth-service.middlewares=auth-service-cors"  # Apply CORS middleware
       - "traefik.http.services.auth-service.loadbalancer.server.port=8081"  # Service port
+    networks:
+      - web
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  project-service:
+    build:
+      context: .
+      dockerfile: ProjectService/Dockerfile
+    image:
+      danyadrakon/project-service:latest
+    volumes:
+      - ./shared:/app/shared
+    environment:
+      - DB=${DB}
+      - SECRET=${SECRET}
+      - PORT=${PORT}
+    labels:
+      - "traefik.enable=true"  # Enable Traefik for this service
+      - "traefik.http.routers.auth-service.rule=Host(`api.alumni-portal.ru`) && PathPrefix(`/projects`)"
+      - "traefik.http.routers.auth-service.entrypoints=websecure"  # Use HTTPS entry point
+      - "traefik.http.routers.auth-service.tls=true"
+      - "traefik.http.routers.auth-service.tls.certresolver=myresolver"
+      - "traefik.http.middlewares.auth-service-redirect-https.redirectscheme.scheme=https"  # Redirect HTTP to HTTPS
+      - "traefik.http.routers.auth-service.middlewares=auth-service-redirect-https"  # Apply HTTPS redirection middleware
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowOriginList=https://alumni-inno.netlify.app"  # CORS settings
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowMethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowHeaders=Content-Type,Authorization"
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlExposeHeaders=Content-Length"
+      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowCredentials=true"
+      - "traefik.http.routers.auth-service.middlewares=auth-service-cors"  # Apply CORS middleware
+      - "traefik.http.services.auth-service.loadbalancer.server.port=8085"  # Service port
     networks:
       - web
     logging:
@@ -167,30 +199,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.event-service.rule=PathPrefix(`/events`)"
       - "traefik.http.services.event-service.loadbalancer.server.port=8084"
-    networks:
-      - web
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "200k"
-        max-file: "10"
-
-  project-service:
-    build:
-      context: .
-      dockerfile: ProjectService/Dockerfile
-    image:
-      danyadrakon/project-service:latest
-    volumes:
-      - ./shared:/app/shared
-    environment:
-      - DB=${DB}
-      - SECRET=${SECRET}
-      - PORT=${PORT}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.project-service.rule=PathPrefix(`/projects`)"
-      - "traefik.http.services.project-service.loadbalancer.server.port=8085"
     networks:
       - web
     logging:

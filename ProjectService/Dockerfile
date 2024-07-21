@@ -16,10 +16,6 @@ RUN go build -o main .
 
 RUN chmod +x /app/main
 
-FROM alpine:latest
-WORKDIR /app
-COPY --from=builder /app/main .
-
 EXPOSE 8085
 
 CMD ["./main"]

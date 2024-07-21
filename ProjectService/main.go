@@ -7,6 +7,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"net/http"
+	"time"
 )
 
 func init() {
@@ -20,12 +22,12 @@ func main() {
 
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"https://alumni-inno.netlify.app"},
-		AllowMethods:     []string{"POST", "PUT", "PATCH", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "access-control-allow-origin", "access-control-allow-headers"},
+		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
 	}))
-
-	// r.Use(middleware.AuthenticateToken())
 
 	r.ForwardedByClientIP = true
 	if r.SetTrustedProxies([]string{"127.0.0.1"}) != nil {
@@ -37,8 +39,14 @@ func main() {
 
 	logrus.Info("Starting Project Service")
 
-	if err := r.Run(":8085"); err != nil {
-		logrus.Fatal("Error starting Project Service")
-		panic(err)
+	httpServer := &http.Server{
+		Addr:    ":8085",
+		Handler: r,
 	}
+
+	if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logrus.Fatal("Failed to start HTTP Project Service:", err)
+		return
+	}
+	logrus.Info("HTTP Project Service started")
 }
