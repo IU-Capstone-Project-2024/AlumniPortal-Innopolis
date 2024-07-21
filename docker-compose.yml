@@ -61,7 +61,7 @@ services:
       - CERTIFICATEKEY=${CERTIFICATEKEY}
     labels:
       - "traefik.enable=true"  # Enable Traefik for this service
-      - "traefik.http.routers.auth-service.rule=Host(`alumni-portal.ru`) && PathPrefix(`/auth`)"
+      - "traefik.http.routers.auth-service.rule=Host(`api.alumni-portal.ru`) && PathPrefix(`/auth`)"
       - "traefik.http.routers.auth-service.entrypoints=websecure"  # Use HTTPS entry point
       - "traefik.http.routers.auth-service.tls=true"
       - "traefik.http.routers.auth-service.tls.certresolver=myresolver"
