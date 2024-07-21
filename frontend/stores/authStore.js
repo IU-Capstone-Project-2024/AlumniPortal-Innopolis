@@ -5,6 +5,22 @@ export const useAuthStore = defineStore('auth', {
         user: null,
     }),
     actions: {
+        async validate() {
+            try {
+                const response = await fetch('https://api.alumni-portal.ru/auth/user')
+                if (response.ok) {
+                    const data = await response.json();
+                    this.user = data;
+                    return data;
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error', error);
+                throw error;
+            }
+        },
         async login(email, password) {
             try {
                 const response = await fetch('https://api.alumni-portal.ru/auth/login', {
