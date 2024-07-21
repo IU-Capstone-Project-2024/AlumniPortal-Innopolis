@@ -91,5 +91,5 @@ jobs:
       - name: Validate deployment
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} << 'EOF'
-          curl -I http://${{ secrets.SSH_HOST }}:80/auth/validate
+          curl -I ${{ secrets.SSH_HOST }}/auth/validate
           EOF
