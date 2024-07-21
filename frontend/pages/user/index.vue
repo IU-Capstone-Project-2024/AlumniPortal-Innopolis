@@ -81,6 +81,8 @@ import {useAuthStore} from "~/stores/authStore.js";
 const auth = useAuthStore()
 import { reactive } from 'vue';
 
+console.log(auth.user)
+
 const user = reactive({
   name: 'test',
   lastName: 'test',
