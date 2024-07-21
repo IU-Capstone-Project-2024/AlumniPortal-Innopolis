@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"alumniportal.com/shared/helpers"
 	"net/http"
 
 	"alumniportal.com/shared/initializers"
@@ -15,7 +16,6 @@ func CreateVolunteerRequest(c *gin.Context) {
 	project, _ := c.Get("project")
 	passRequest := sharedModels.Volunteer{
 		UserID:    user.(sharedModels.User).ID,
-		Role:      user.(sharedModels.User).Role,
 		ProjectID: user.(sharedModels.Project).ID,
 		Status:    sharedModels.UnverifiedVolunteer,
 	}
@@ -30,7 +30,6 @@ func CreateVolunteerRequest(c *gin.Context) {
 	logrus.WithFields(logrus.Fields{
 		"user_id":          user.(sharedModels.User).ID,
 		"project_id":       project.(sharedModels.Project).ID,
-		"role":             user.(sharedModels.User).Role,
 		"volunteer_req_id": passRequest.ID,
 	}).Info("Pass request created successfully")
 	c.JSON(http.StatusOK, passRequest)
@@ -53,7 +52,7 @@ func DeleteVolunteerRequest(c *gin.Context) {
 		return
 	}
 
-	if volunteerModel.UserID != user.(sharedModels.User).ID && user.(sharedModels.User).IsAlumni {
+	if volunteerModel.UserID != user.(sharedModels.User).ID && user.(sharedModels.User).Role != helpers.Admin {
 		logrus.WithFields(logrus.Fields{
 			"user_id":          user.(sharedModels.User).ID,
 			"volunteer_req_id": volunteerModel.ID,

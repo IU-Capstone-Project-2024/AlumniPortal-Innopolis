@@ -81,7 +81,7 @@ func DeletePassRequest(c *gin.Context) {
 		return
 	}
 
-	if user.(models.User).IsAdmin == true {
+	if user.(models.User).Role == helpers.Admin {
 		if err := initializers.DB.Where("id = ?", c.Param("id")).First(&passRequest).Error; err != nil {
 			logrus.WithFields(logrus.Fields{
 				"request_id": c.Param("id"),
@@ -101,7 +101,7 @@ func DeletePassRequest(c *gin.Context) {
 		}
 	}
 
-	if passRequest.UserID != user.(models.User).ID && user.(models.User).IsAdmin == false {
+	if passRequest.UserID != user.(models.User).ID && user.(models.User).Role != helpers.Admin {
 		logrus.WithFields(logrus.Fields{
 			"user_id":    user.(models.User).ID,
 			"request_id": passRequest.ID,

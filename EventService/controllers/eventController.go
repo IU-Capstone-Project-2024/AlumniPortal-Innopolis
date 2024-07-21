@@ -119,7 +119,7 @@ func DeleteEvent(c *gin.Context) {
 		return
 	}
 
-	if user.(sharedModels.User).IsAdmin == true {
+	if user.(sharedModels.User).Role == helpers.Admin {
 		if err := initializers.DB.Where("id = ?", c.Param("id")).First(&event).Error; err != nil {
 			logrus.WithFields(logrus.Fields{
 				"event_id": c.Param("id"),
@@ -139,7 +139,7 @@ func DeleteEvent(c *gin.Context) {
 		}
 	}
 
-	if event.FounderID != user.(sharedModels.User).ID && user.(sharedModels.User).IsAdmin == false {
+	if event.FounderID != user.(sharedModels.User).ID && user.(sharedModels.User).Role != helpers.Admin {
 		logrus.WithFields(logrus.Fields{
 			"user_id":  user.(sharedModels.User).ID,
 			"event_id": event.ID,

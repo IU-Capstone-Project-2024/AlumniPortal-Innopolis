@@ -79,7 +79,7 @@ func RemoveParticipant(c *gin.Context) {
 		return
 	}
 
-	if user.(sharedModels.User).IsAdmin == true {
+	if user.(sharedModels.User).Role == helpers.Admin {
 		if err := initializers.DB.Where("id = ?", c.Param("id")).First(&participant).Error; err != nil {
 			logrus.WithFields(logrus.Fields{
 				"participation_id": c.Param("id"),
@@ -103,7 +103,7 @@ func RemoveParticipant(c *gin.Context) {
 		}
 	}
 
-	if participant.UserID != user.(sharedModels.User).ID && user.(sharedModels.User).IsAdmin == false {
+	if participant.UserID != user.(sharedModels.User).ID && user.(sharedModels.User).Role != helpers.Admin {
 		logrus.WithFields(logrus.Fields{
 			"participation_id": participant.ID,
 			"user_id":          user.(sharedModels.User).ID,

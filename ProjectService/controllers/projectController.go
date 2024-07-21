@@ -114,7 +114,7 @@ func DeleteProject(c *gin.Context) {
 		return
 	}
 
-	if user.(sharedModels.User).IsAdmin == true {
+	if user.(sharedModels.User).Role == helpers.Admin {
 		if err := initializers.DB.Where("id = ?", c.Param("id")).First(&project).Error; err != nil {
 			logrus.WithFields(logrus.Fields{
 				"project_id": c.Param("id"),
@@ -134,7 +134,7 @@ func DeleteProject(c *gin.Context) {
 		}
 	}
 
-	if project.FounderID != user.(sharedModels.User).ID && user.(sharedModels.User).IsAdmin == false {
+	if project.FounderID != user.(sharedModels.User).ID && user.(sharedModels.User).Role != helpers.Admin {
 		logrus.WithFields(logrus.Fields{
 			"user_id":    user.(sharedModels.User).ID,
 			"project_id": project.ID,
