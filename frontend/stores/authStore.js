@@ -47,9 +47,22 @@ export const useAuthStore = defineStore('auth', {
                 throw error;
             }
         },
-        logout() {
-            this.user = null;
-            document.cookie = 'Authorization=; Max-Age=0; path=/;';
+        async logout() {
+            try {
+                const response = await fetch('https://api.alumni-portal.ru/auth/logout', {
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    this.user = null;
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error', error);
+                throw error;
+            }
         },
     },
 });

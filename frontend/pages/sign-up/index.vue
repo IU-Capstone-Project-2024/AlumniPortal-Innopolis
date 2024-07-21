@@ -82,8 +82,29 @@ const { handleSubmit, values, errors } = useForm({
   validationSchema,
 });
 
-const submitHandler = handleSubmit((values) => {
-  console.log(values);
+const submitHandler = handleSubmit(async (values) => {
+  try {
+    const res = await fetch('https://api.alumni-portal.ru/auth/signup', {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        name: values.name,
+        lastName: values.lastname,
+        email: values.login,
+        password: values.password,
+      }),
+    })
+
+    if (res.ok) {
+      navigateToSignIn()
+    } else {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Signup failed');
+    }
+  } catch (error) {
+  console.error('Signup error', error);
+  throw error;
+}
 });
 
 const navigateToSignIn = () => {
