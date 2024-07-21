@@ -6,6 +6,7 @@ import (
 	"github.com/ayush6624/go-chatgpt"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"os"
@@ -99,6 +100,7 @@ func main() {
 
 	s := grpc.NewServer()
 	pb.RegisterFilteringServiceServer(s, &server{})
+	reflection.Register(s)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve filtering service: %v", err)

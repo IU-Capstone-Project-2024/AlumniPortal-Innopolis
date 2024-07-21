@@ -56,6 +56,8 @@ services:
       - DB=${DB}
       - SECRET=${SECRET}
       - PORT=${PORT}
+      - API_KEY=${API_KEY}
+      - OPENAI_KEY=${OPENAI_KEY}
     labels:
       - "traefik.enable=true"  # Enable Traefik for this service
       - "traefik.http.routers.auth-service.rule=Host(`api.alumni-portal.ru`) && PathPrefix(`/auth`)"
@@ -91,21 +93,23 @@ services:
       - DB=${DB}
       - SECRET=${SECRET}
       - PORT=${PORT}
+      - API_KEY=${API_KEY}
+      - OPENAI_KEY=${OPENAI_KEY}
     labels:
       - "traefik.enable=true"  # Enable Traefik for this service
-      - "traefik.http.routers.auth-service.rule=Host(`api.alumni-portal.ru`) && PathPrefix(`/projects`)"
-      - "traefik.http.routers.auth-service.entrypoints=websecure"  # Use HTTPS entry point
-      - "traefik.http.routers.auth-service.tls=true"
-      - "traefik.http.routers.auth-service.tls.certresolver=myresolver"
-      - "traefik.http.middlewares.auth-service-redirect-https.redirectscheme.scheme=https"  # Redirect HTTP to HTTPS
-      - "traefik.http.routers.auth-service.middlewares=auth-service-redirect-https"  # Apply HTTPS redirection middleware
-      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowOriginList=https://alumni-inno.netlify.app"  # CORS settings
-      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowMethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
-      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowHeaders=Content-Type,Authorization"
-      - "traefik.http.middlewares.auth-service-cors.headers.accessControlExposeHeaders=Content-Length"
-      - "traefik.http.middlewares.auth-service-cors.headers.accessControlAllowCredentials=true"
-      - "traefik.http.routers.auth-service.middlewares=auth-service-cors"  # Apply CORS middleware
-      - "traefik.http.services.auth-service.loadbalancer.server.port=8085"  # Service port
+      - "traefik.http.routers.project-service.rule=Host(`api.alumni-portal.ru`) && PathPrefix(`/projects`)"
+      - "traefik.http.routers.project-service.entrypoints=websecure"  # Use HTTPS entry point
+      - "traefik.http.routers.project-service.tls=true"
+      - "traefik.http.routers.project-service.tls.certresolver=myresolver"
+      - "traefik.http.middlewares.project-service-redirect-https.redirectscheme.scheme=https"  # Redirect HTTP to HTTPS
+      - "traefik.http.routers.project-service.middlewares=project-service-redirect-https"  # Apply HTTPS redirection middleware
+      - "traefik.http.middlewares.project-service-cors.headers.accessControlAllowOriginList=https://alumni-inno.netlify.app"  # CORS settings
+      - "traefik.http.middlewares.project-service-cors.headers.accessControlAllowMethods=GET,POST,PUT,PATCH,DELETE,OPTIONS"
+      - "traefik.http.middlewares.project-service-cors.headers.accessControlAllowHeaders=Content-Type,Authorization"
+      - "traefik.http.middlewares.project-service-cors.headers.accessControlExposeHeaders=Content-Length"
+      - "traefik.http.middlewares.project-service-cors.headers.accessControlAllowCredentials=true"
+      - "traefik.http.routers.project-service.middlewares=project-service-cors"  # Apply CORS middleware
+      - "traefik.http.services.project-service.loadbalancer.server.port=8085"  # Service port
     networks:
       - web
     logging:

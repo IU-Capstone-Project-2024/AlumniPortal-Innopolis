@@ -13,4 +13,6 @@ type Project struct {
 	Description string                     `gorm:"not null"`
 	Finished    bool                       `gorm:"not null;default:false"`
 	Status      helpers.VerificationStatus `gorm:"not null;default:'Unverified'"`
+	Goal        int                        `gorm:"not null;default:0"`
+	Collected   int                        `gorm:"not null;default:0"`
 }
