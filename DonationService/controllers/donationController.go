@@ -79,14 +79,14 @@ func GetCurrentProjectDonationRequests(c *gin.Context) {
 
 	if err := initializers.DB.Where("project_id = ?", projectId).Preload("Project").Find(&donationRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
-			"project_id": project.(sharedModels.Project).ID,
+			"project_id": projectId,
 			"error":      err.Error(),
 		}).Error("Project is not found for GetCurrentProjectDonationRequests")
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Project is not found"})
 		return
 	}
 	logrus.WithFields(logrus.Fields{
-		"project_id": project.(sharedModels.Project).ID,
+		"project_id": projectId,
 		"count":      len(donationRequests),
 	}).Info("Fetched current project donation requests successfully")
 	c.JSON(http.StatusOK, donationRequests)
