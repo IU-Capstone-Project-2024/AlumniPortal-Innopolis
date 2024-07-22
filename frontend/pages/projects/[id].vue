@@ -20,10 +20,11 @@
 
 
     <div class="container flex flex-col sm:flex-row justify-between">
-      <UIDonationForm />
-      <div class="container mt-5 sm:mt-0 flex flex-col">
-        <span class="wrapper sm:ml-5">ranking</span>
-        <span class="wrapper sm:ml-5 mt-5">ranking</span>
+      <UIDonationForm v-if="auth.user.role == 'Alumni'"/>
+      
+      <div class="wrapper sm:ml-5 mt-5 sm:mt-0">
+        <h2 class="text-xl font-semibold font-montserrat text-[#40BA21]">Top Contributors</h2>
+        <Ranking :donators="donators"/>
       </div>
     </div>
   </div>
@@ -31,12 +32,31 @@
 </template>
 
 <script setup>
+import {useAuthStore} from "~/stores/authStore.js";
+
+definePageMeta
+({
+  middleware
+      : 'auth'
+})
+
 import { useProjectStore } from '/stores/projectStore.js'
 import { storeToRefs } from 'pinia'
 const route = useRoute()
 const store = useProjectStore()
+const auth = useAuthStore()
+await store.fetchProjects()
 const { projects } = storeToRefs(store)
 const currentProject = ref(null)
+
+const res = await fetch('https://api.alumni-portal.ru/donation/project/' + route.params.id, {
+  credentials: "include",
+})
+
+const donators = await res.json()
+
+donators.sort((a, b) => b.Amount - a.Amount)
+
 currentProject.value = projects.value.filter(p => p.id == route.params.id)[0]
 const daysLeft = 30;
 </script>
@@ -47,4 +67,5 @@ const daysLeft = 30;
   padding: 1.75rem
   border-radius: 0.5rem
   box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, 0.1)
+  max-height: min-content
 </style>

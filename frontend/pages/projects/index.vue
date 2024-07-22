@@ -12,6 +12,7 @@
 
 <script setup>
 import { useProjectStore } from '/stores/projectStore.js'
+
 const store = useProjectStore()
 await store.fetchProjects()
 const router = useRouter();
@@ -21,7 +22,7 @@ const clickHandle = (id) => {
 }
 
 
-const projects = store.getProjects
+const projects = store.getVerifiedProjects
 </script>
 
 <style lang="sass" scoped>

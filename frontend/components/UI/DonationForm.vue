@@ -130,7 +130,7 @@ const submitHandler = handleSubmit((values) => {
   background-color: white;
   padding: 1.75rem;
   width: 100%;
-  max-width: 48rem;
+  max-width: 46rem;
   border-radius: 0.5rem;
   box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, 0.1);
 }

@@ -50,6 +50,7 @@ export const useAuthStore = defineStore('auth', {
         async logout() {
             try {
                 const response = await fetch('https://api.alumni-portal.ru/auth/logout', {
+                    method: 'POST',
                     credentials: 'include',
                 });
 

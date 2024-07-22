@@ -76,6 +76,11 @@
 </template>
 
 <script setup>
+definePageMeta
+({
+  middleware
+      : 'auth'
+})
 import {useAuthStore} from "~/stores/authStore.js";
 
 const auth = useAuthStore()

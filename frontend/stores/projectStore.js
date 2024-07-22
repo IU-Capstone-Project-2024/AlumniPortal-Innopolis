@@ -8,6 +8,7 @@ export const useProjectStore = defineStore({
     },
     actions: {
         async fetchProjects() {
+            this.projects = []
             try {
                 const response = await fetch('https://api.alumni-portal.ru/projects', {
                     credentials: "include",
@@ -22,6 +23,7 @@ export const useProjectStore = defineStore({
                             desc: project.Description,
                             collected: project.Collected,
                             goal: project.Goal,
+                            Status: project.Status,
                         })
                     }
                 } else {
@@ -39,7 +41,10 @@ export const useProjectStore = defineStore({
     },
     getters: {
         getProjects: state => state.projects,
+        getVerifiedProjects: state => {
+            return state.projects.filter(p => p.Status === 'Accepted')
+        },
         getProjectById: (state) => {
-            return (id) => state.projects.find(p => p.id === id)},
+            return (id) => state.projects.findOne(p => p.id === id)},
     }
 })
