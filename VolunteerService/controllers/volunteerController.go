@@ -1,8 +1,9 @@
 package controllers
 
 import (
-	"alumniportal.com/shared/helpers"
 	"net/http"
+
+	"alumniportal.com/shared/helpers"
 
 	"alumniportal.com/shared/initializers"
 	sharedModels "alumniportal.com/shared/models"
@@ -16,7 +17,7 @@ func CreateVolunteerRequest(c *gin.Context) {
 	project, _ := c.Get("project")
 	passRequest := sharedModels.Volunteer{
 		UserID:    user.(sharedModels.User).ID,
-		ProjectID: user.(sharedModels.Project).ID,
+		ProjectID: project.(sharedModels.Project).ID,
 		Status:    sharedModels.UnverifiedVolunteer,
 	}
 	if err := initializers.DB.Create(&passRequest).Error; err != nil {
@@ -149,9 +150,8 @@ func GetVolunteerRequest(c *gin.Context) {
 	var volunteerRequest sharedModels.Volunteer
 
 	user, _ := c.Get("user")
-	project, _ := c.Get("project")
 
-	if err := initializers.DB.Where("id = ? AND user_id = ? AND project_id = ? AND role = ?", c.Param("id"), user.(sharedModels.User).ID, project.(sharedModels.Project).ID, user.(sharedModels.User).Role).Preload("User").Preload("Project").First(&volunteerRequest).Error; err != nil {
+	if err := initializers.DB.Where("id = ? AND user_id = ?", c.Param("id"), user.(sharedModels.User).ID).Preload("User").Preload("Project").First(&volunteerRequest).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"user_id":          user.(sharedModels.User).ID,
 			"volunteer_req_id": c.Param("id"),
