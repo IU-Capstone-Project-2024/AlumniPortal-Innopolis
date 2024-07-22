@@ -14,7 +14,7 @@ import (
 
 type DonationRequestInput struct {
 	Amount            float32 `json:"amount" binding:"required"`
-	RecurringDonation string  `json:"recurring_donation" binding:"required,oneof=Monthly Quarterly Yearly"`
+	RecurringDonation string  `json:"recurring_donation" binding:"required,oneof=OneTime Monthly Quarterly Yearly"`
 	PaymentMethod     string  `json:"payment_method" binding:"required,oneof=CreditCard PayPal BankTransfer"`
 }
 

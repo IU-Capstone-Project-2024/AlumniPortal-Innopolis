@@ -5,6 +5,7 @@ import (
 	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
 	sharedModels "alumniportal.com/shared/models"
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"

@@ -16,6 +16,7 @@ const (
 type RecurringDonation string
 
 const (
+	OneTime   RecurringDonation = "OneTime"
 	Monthly   RecurringDonation = "Monthly"
 	Quarterly RecurringDonation = "Quarterly"
 	Yearly    RecurringDonation = "Yearly"
