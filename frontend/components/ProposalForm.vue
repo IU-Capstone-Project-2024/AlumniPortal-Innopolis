@@ -1,32 +1,26 @@
 <template>
-  <div class="mt-[6rem] container mx-auto p-4 flex justify-center items-center min-h-screen">
-    <div class="w-full max-w-2xl">
-      <header class="text-center mb-6">
-        <h1 class="text-4xl font-montserrat font-bold mb-4 text-[#40BA21]">Project Proposal</h1>
-      </header>
-      <div class="wrapper">
-        <Form @submit="submitHandler" class="form">
-          <h2 class="title font-montserrat mb-6">Submit Your Project Proposal</h2>
+<Form @submit="submitHandler" class="form">
+  <h2 class="title font-montserrat mb-6">Submit Your Project Proposal</h2>
 
-          <div class="field mb-4">
-            <label for="projectName" class="label font-ibm">Project Name</label>
-            <Field
-              name="projectName"
-              as="input"
-              type="text"
-              placeholder="Project Name"
-              :class="['input', 'font-ibm', { valid: !errors.projectName && values.projectName }]"
-            />
-            <ErrorMessage name="projectName" class="error-message font-ibm" />
-          </div>
+  <div class="field mb-4">
+    <label for="projectName" class="label font-ibm">Project Name</label>
+    <Field
+      name="projectName"
+      as="input"
+      type="text"
+      placeholder="Project Name"
+      :class="['input', 'font-ibm', { valid: !errors.projectName && values.projectName }]"
+    />
+    <ErrorMessage name="projectName" class="error-message font-ibm" />
+  </div>
 
-          <div class="field mb-4">
-            <label for="projectDescription" class="label font-ibm">Project Description</label>
-            <Field
-              name="projectDescription"
-              as="textarea"
-              rows="18"
-              placeholder="Rules:
+  <div class="field mb-4">
+    <label for="projectDescription" class="label font-ibm">Project Description</label>
+    <Field
+      name="projectDescription"
+      as="textarea"
+      rows="18"
+      placeholder="Rules:
 1. Submissions must be related to IT, computer science, or technology fields.
 2. Projects must have a clear objective, scope, and potential impact.
 3. A detailed project description must be provided, including goals, methodology, expected outcomes.
@@ -35,34 +29,31 @@
 6. Projects must comply with all university policies and guidelines.
 7. Submissions must adhere to ethical standards, including respect for intellectual property, privacy, and data protection laws.
 8. Projects involving human subjects must obtain appropriate ethical approvals."
-              :class="['input', 'font-ibm', { valid: !errors.projectDescription && values.projectDescription }]"
-            />
-            <ErrorMessage name="projectDescription" class="error-message font-ibm" />
-          </div>
-
-          <div class="field mb-6">
-            <label for="goal" class="label font-ibm">Goal (Amount Needed)</label>
-            <Field
-              name="goal"
-              as="input"
-              type="number"
-              placeholder="Please enter the amount needed"
-              :class="['input', 'font-ibm', 'green-text', { valid: !errors.goal && values.goal }]"
-            />
-            <ErrorMessage name="goal" class="error-message font-ibm" />
-          </div>
-
-          <div class="button-wrapper">
-            <UIButton
-              btn_type="submit"
-              text="Submit Proposal"
-              class="w-full py-3 text-xl font-semibold"
-            />
-          </div>
-        </Form>
-      </div>
-    </div>
+      :class="['input', 'font-ibm', { valid: !errors.projectDescription && values.projectDescription }]"
+    />
+    <ErrorMessage name="projectDescription" class="error-message font-ibm" />
   </div>
+
+  <div class="field mb-6">
+    <label for="goal" class="label font-ibm">Goal (Amount Needed)</label>
+    <Field
+      name="goal"
+      as="input"
+      type="number"
+      placeholder="Please enter the amount needed"
+      :class="['input', 'font-ibm', 'green-text', { valid: !errors.goal && values.goal }]"
+    />
+    <ErrorMessage name="goal" class="error-message font-ibm" />
+  </div>
+
+  <div class="button-wrapper">
+    <UIButton
+      btn_type="submit"
+      text="Submit Proposal"
+      class="w-full py-3 text-xl font-semibold"
+    />
+  </div>
+</Form>
 </template>
 
 <script setup>

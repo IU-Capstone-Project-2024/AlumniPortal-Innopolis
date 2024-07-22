@@ -3,24 +3,27 @@
         class="header flex items-center h-15 justify-between p-6 absolute top-0 left-0 w-screen z-10">
         <HeaderLogo />
         <ul v-show="!config.getMobile || mobileNav" class="flex gap-4 font-ibm" :class="mobileNav ? 'dropdown-nav flex-col' : '' ">
-            <li>
-                <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/">Home</NuxtLink>
-            </li>
-            <li v-if="auth.user && auth.user.verified">
-                <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/projects">Projects</NuxtLink>
-            </li>
-            <li v-if="auth.user && auth.user.verified">
-                <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/offers">Offers</NuxtLink>
-            </li>
-            <li v-if="auth.user">
-              <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/user">Profile</NuxtLink>
-            </li>
-            <li v-if="!auth.user">
-                <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/sign-in">Sign In</NuxtLink>
-            </li>
-            <li v-else>
-              <span class="link hover:text-[#40BA21] font-ibm dark:text-white hover:cursor-pointer" @click="auth.logout">Sign Out</span>
-            </li>
+          <li>
+              <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/">Home</NuxtLink>
+          </li>
+          <li v-if="auth.user && auth.user.verified">
+              <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/projects">Projects</NuxtLink>
+          </li>
+          <li v-if="auth.user && auth.user.verified && auth.user.role == 'Student'">
+            <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/user-projects">My Projects</NuxtLink>
+          </li>
+          <li v-if="auth.user && auth.user.verified">
+              <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/offers">Offers</NuxtLink>
+          </li>
+          <li v-if="auth.user">
+            <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/user">Profile</NuxtLink>
+          </li>
+          <li v-if="!auth.user">
+              <NuxtLink class="link hover:text-[#40BA21] font-ibm dark:text-white" to="/sign-in">Sign In</NuxtLink>
+          </li>
+          <li v-else>
+            <span class="link hover:text-[#40BA21] font-ibm dark:text-white hover:cursor-pointer" @click="logoutHandler">Sign Out</span>
+          </li>
         </ul>
         <div v-show="config.getMobile" class="icon" :class="{ 'icon-active': mobileNav }">
           <font-awesome-icon @click="toggleMobileNav" v-show="config.getMobile" icon="fa-solid fa-bars" />
@@ -67,6 +70,10 @@ const checkScreen = () => {
   mobileNav.value = false
 }
 
+const logoutHandler = () => {
+  auth.logout()
+  navigateTo('/')
+}
 
 </script>
 

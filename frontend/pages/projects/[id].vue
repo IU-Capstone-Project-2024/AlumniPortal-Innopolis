@@ -21,10 +21,13 @@
 
     <div class="container flex flex-col sm:flex-row justify-between">
       <UIDonationForm v-if="auth.user.role == 'Alumni'"/>
-      
-      <div class="wrapper sm:ml-5 mt-5 sm:mt-0">
+      <VolunteerForm v-if="auth.user.role == 'Student'"/>
+      <div class="wrapper sm:ml-5 mt-5 sm:mt-0" v-if="auth.user.role == 'Alumni'">
         <h2 class="text-xl font-semibold font-montserrat text-[#40BA21]">Top Contributors</h2>
         <Ranking :donators="donators"/>
+      </div>
+      <div class="wrapper sm:ml-5 mt-5 sm:mt-0" v-if="auth.user.role == 'Student'">
+        <h2 class="text-xl font-semibold font-montserrat text-[#40BA21]">Volunteers</h2>
       </div>
     </div>
   </div>

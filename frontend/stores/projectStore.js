@@ -24,6 +24,7 @@ export const useProjectStore = defineStore({
                             collected: project.Collected,
                             goal: project.Goal,
                             Status: project.Status,
+                            user: project.User
                         })
                     }
                 } else {

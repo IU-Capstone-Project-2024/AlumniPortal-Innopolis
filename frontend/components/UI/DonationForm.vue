@@ -105,7 +105,9 @@
 import { ref, computed } from 'vue';
 import { useForm, ErrorMessage, Field } from 'vee-validate';
 import * as yup from 'yup';
+import {useProjectStore} from "~/stores/projectStore.js";
 
+const projects = useProjectStore()
 const validationSchema = yup.object({
   firstName: yup.string().required('First Name is required'),
   lastName: yup.string().required('Last Name is required'),
@@ -120,8 +122,29 @@ const { handleSubmit, values, errors } = useForm({
   validationSchema,
 });
 
-const submitHandler = handleSubmit((values) => {
-  console.log(values);
+const submitHandler = handleSubmit(async (values) => {
+  try {
+    const res = await fetch('https://api.alumni-portal.ru/donation', {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        Amount: values.amount,
+        PaymentMethod: values.paymentMethod,
+        RecurringDonation: values.recurringDonation,
+      }),
+    })
+
+    if (res.ok) {
+      await projects.fetchProjects()
+      navigateTo('/projects')
+    } else {
+      const errorData = await res.json();
+      throw new Error(errorData.message || 'Donate failed');
+    }
+  } catch (error) {
+    console.error('Donate error', error);
+    throw error;
+  }
 });
 </script>
 
