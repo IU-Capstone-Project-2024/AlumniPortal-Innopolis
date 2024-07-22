@@ -90,6 +90,7 @@ func TestCreateProject(t *testing.T) {
 	input := controllers.ProjectInput{
 		Name:        "PPPPPP",
 		Description: "DDDDDD",
+		Goal:        1,
 	}
 	jsonData, _ := json.Marshal(input)
 
@@ -147,10 +148,11 @@ func TestUpdateProject(t *testing.T) {
 	input := controllers.ProjectInput{
 		Name:        "New_Name",
 		Description: "New_Descr",
+		Goal:        2,
 	}
 	jsonData, _ := json.Marshal(input)
 	w := httptest.NewRecorder()
-	url := fmt.Sprintf("/projects/%d/edit", 15)
+	url := fmt.Sprintf("/projects/%d/edit", 18)
 	req, _ := http.NewRequest("PATCH", url, bytes.NewBuffer(jsonData))
 	req.Header.Set("Content-Type", "application/json")
 	req.AddCookie(&http.Cookie{Name: "Authorization", Value: authToken})

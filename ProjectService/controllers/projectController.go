@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"net/http"
+
 	pb "alumniportal.com/shared/grpc/proto"
 	"alumniportal.com/shared/helpers"
 	"alumniportal.com/shared/initializers"
@@ -8,12 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"net/http"
 )
 
 type ProjectInput struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description" binding:"required"`
+	Goal        int    `json:"goal" binding:"required"`
 }
 
 var filteringServiceAddress = "filtering-service:50051"
@@ -42,6 +44,7 @@ func CreateProject(c *gin.Context) {
 		FounderID:   user.(sharedModels.User).ID,
 		Name:        input.Name,
 		Description: input.Description,
+		Goal:        input.Goal,
 		Status:      helpers.Unverified,
 	}
 
@@ -182,6 +185,7 @@ func UpdateProject(c *gin.Context) {
 	updateData := sharedModels.Project{
 		Name:        input.Name,
 		Description: input.Description,
+		Goal:        input.Goal,
 	}
 
 	if err := initializers.DB.Model(&project).Updates(updateData).Error; err != nil {
@@ -229,6 +233,7 @@ func UpdateProjectAdmin(c *gin.Context) {
 	updateData := sharedModels.Project{
 		Name:        input.Name,
 		Description: input.Description,
+		Goal:        input.Goal,
 	}
 
 	if err := initializers.DB.Model(&project).Updates(updateData).Error; err != nil {
