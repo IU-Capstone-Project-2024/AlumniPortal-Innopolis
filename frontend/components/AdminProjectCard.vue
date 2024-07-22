@@ -1,10 +1,11 @@
 <template>
   <div class="max-w-sm bg-white rounded-lg shadow-md overflow-hidden">
-    <img :src="computedImage" alt="Card image" class="w-full h-48 object-contain">
+    <img src="~/assets/adminproject.png" alt="Card image" class="w-full h-48 object-contain">
     <div class="p-6">
-      <h2 class="text-xl font-ibm font-semibold mb-2">{{ name }} {{ lastname }}</h2>
-      <p class="text-gray-700 font-ibm mb-2"><strong>Email:</strong> {{ email }}</p>
-      <p class="text-gray-700 font-ibm mb-4"><strong>Role:</strong> {{ role }}</p>
+      <h3 class="text-lg font-ibm font-semibold mb-2">{{ projectName }}</h3>
+      <p class="text-gray-700 font-ibm mb-2"><strong>Description:</strong> {{ projectDescription }}</p>
+      <p class="text-gray-700 font-ibm mb-2"><strong>Creator's Email:</strong> {{ creatorEmail }}</p>
+      <p class="text-gray-700 font-ibm mb-4"><strong>Goal:</strong> ${{ projectGoal }}</p>
       <div class="flex space-x-2 mt-2">
         <UIButton
           btn_type="submit"
@@ -24,31 +25,22 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-
 const props = defineProps({
-  image: {
-    type: String,
-    required: false,
-  },
-  name: {
+  projectName: {
     type: String,
     required: true,
   },
-  lastname: {
+  projectDescription: {
     type: String,
     required: true,
   },
-  email: {
+  creatorEmail: {
     type: String,
     required: true,
   },
-  role: {
-    type: String,
+  projectGoal: {
+    type: Number,
     required: true,
-  }
+  },
 });
-
-const defaultImage = "/adminprofile.png";
-const computedImage = computed(() => props.image || defaultImage);
 </script>
