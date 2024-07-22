@@ -171,6 +171,11 @@ const navigateToSignIn = () => {
     &.valid
       border-color: #40BA21
 
+  .error-message
+    color: #F56565
+    font-size: 0.75rem
+    margin-top: 0.25rem
+
 .select 
   appearance: none
   background-color: white
@@ -190,10 +195,7 @@ const navigateToSignIn = () => {
     display: none
   
 
-  .error-message
-    color: #F56565
-    font-size: 0.75rem
-    margin-top: 0.25rem
+  
 
 .remember-me-field
   display: flex
