@@ -13,4 +13,10 @@ func SetupRouter(route *gin.Engine) {
 	{
 		student.GET("/project/sum", controllers.GetAccumulatedSumDonationRequest)
 	}
+
+	protected := route.Group("/donation")
+	protected.Use(middleware.RequireVerify)
+	{
+		protected.GET("/project/:id", controllers.GetCurrentProjectDonationRequests)
+	}
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	pb "alumniportal.com/shared/grpc/proto"
 	"alumniportal.com/shared/initializers"
 	"bytes"
 	"context"
@@ -13,10 +14,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
-
-	pb "alumniportal.com/shared/grpc/proto"
 )
 
 func init() {
@@ -36,7 +34,7 @@ func (s *server) GradeDescription(ctx context.Context, req *pb.GradeRequest) (*p
 }
 
 func Filter(description string, isProject bool) (int, error) {
-	proxyURL, err := url.Parse("http://207.180.234.234:3128")
+	proxyURL, err := url.Parse("http://AQStkg:4Pzo25@168.81.66.72:8000")
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
@@ -59,8 +57,8 @@ func Filter(description string, isProject bool) (int, error) {
 		suffix = "event"
 	}
 
-	prompt := "Grade the " + suffix + " description according to the rules.\n" +
-		"Description: \n" + description + "\n" +
+	promptHeader := "Grade the " + suffix + " description according to the rules. WRITE ONLY THE GRADE FROM 1 TO 10"
+	promptBody := "Description: \n" + description + "\n" +
 		"Rules:\n" +
 		"1. Submissions must be related to IT, computer science, or technology fields.\n" +
 		"2. Projects must have a clear objective, scope, and potential impact.\n" +
@@ -69,14 +67,28 @@ func Filter(description string, isProject bool) (int, error) {
 		"5. Projects requiring specialized equipment or software must detail how these will be procured and used.\n" +
 		"6. Projects must comply with all university policies and guidelines.\n" +
 		"7. Submissions must adhere to ethical standards, including respect for intellectual property, privacy, and data protection laws.\n" +
-		"8. Projects involving human subjects must obtain appropriate ethical approvals.\n\n" +
-		"WRITE ONLY THE GRADE FROM 1 TO 10"
+		"8. Projects involving human subjects must obtain appropriate ethical approvals.\n"
 
-	requestBody, err := json.Marshal(map[string]interface{}{
-		"model":    "gpt-4",
-		"messages": []map[string]string{{"role": "system", "content": prompt}},
-	})
+	requestBodyMap := map[string]interface{}{
+		"modelUri": "gpt://b1ge4v0vv3t1uubfd7an/yandexgpt-lite",
+		"completionOptions": map[string]interface{}{
+			"stream":      false,
+			"temperature": 0.1,
+			"maxTokens":   "1000",
+		},
+		"messages": []map[string]interface{}{
+			{
+				"role": "system",
+				"text": promptHeader,
+			},
+			{
+				"role": "user",
+				"text": promptBody,
+			},
+		},
+	}
 
+	requestBody, err := json.Marshal(requestBodyMap)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
@@ -84,7 +96,7 @@ func Filter(description string, isProject bool) (int, error) {
 		return 1, err
 	}
 
-	req, err := http.NewRequest("POST", "https://api.openai.com/v1/engines/gpt-4/completions", bytes.NewBuffer(requestBody))
+	req, err := http.NewRequest("POST", "https://llm.api.cloud.yandex.net/foundationModels/v1/completion", bytes.NewBuffer(requestBody))
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"error": err.Error(),
@@ -93,7 +105,7 @@ func Filter(description string, isProject bool) (int, error) {
 	}
 
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+os.Getenv("OPENAI_KEY"))
+	req.Header.Set("Authorization", "Bearer t1.9euelZqcio7HjsmbxsmUmsyQzM2Pk-3rnpWak5qanI6Nk8iVipWbkZ6bzZnl9Pd_IAlL-e8cEADN3fT3P08GS_nvHBAAzc3n9euelZqdnInLnouXzceNnovOi8-TlO_8xeuelZqdnInLnouXzceNnovOi8-TlA.pL6IWii8ept17G3HeYVL_vwTxpefufxan8gfdFNGInctrx3abmw0IKKcU6O5Ghahn3GnR4GZLM43QVPcJEn2Cw")
 
 	resp, err := httpClient.Do(req)
 	if err != nil {
@@ -112,11 +124,21 @@ func Filter(description string, isProject bool) (int, error) {
 	}
 
 	var responseBody struct {
-		Choices []struct {
-			Message struct {
-				Content string `json:"content"`
-			} `json:"message"`
-		} `json:"choices"`
+		Result struct {
+			Alternatives []struct {
+				Message struct {
+					Role string `json:"role"`
+					Text string `json:"text"`
+				} `json:"message"`
+				Status string `json:"status"`
+			} `json:"alternatives"`
+			Usage struct {
+				InputTextTokens  string `json:"inputTextTokens"`
+				CompletionTokens string `json:"completionTokens"`
+				TotalTokens      string `json:"totalTokens"`
+			} `json:"usage"`
+			ModelVersion string `json:"modelVersion"`
+		} `json:"result"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&responseBody); err != nil {
@@ -126,12 +148,11 @@ func Filter(description string, isProject bool) (int, error) {
 		return 1, err
 	}
 
-	// Extract and convert the grade
-	grade, err := strconv.Atoi(responseBody.Choices[0].Message.Content)
+	gradeStr := responseBody.Result.Alternatives[0].Message.Text
+
+	grade, err := strconv.Atoi(gradeStr)
 	if err != nil {
-		logrus.WithFields(logrus.Fields{
-			"error": err.Error(),
-		}).Error("Failed to convert grade to integer")
+		log.Fatalf("Failed to convert grade to integer: %v", err)
 		return 1, err
 	}
 

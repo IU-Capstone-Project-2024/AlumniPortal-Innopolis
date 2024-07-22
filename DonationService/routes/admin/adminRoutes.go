@@ -14,6 +14,5 @@ func SetupRouter(route *gin.Engine) {
 		admin.GET("/user_id", controllers.GetCurrentUserDonationRequests)
 		admin.GET("/amount", controllers.GetCurrentAmountDonationRequests)
 		admin.GET("/date", controllers.GetCurrentDateDonationRequests)
-		admin.GET("/project", controllers.GetCurrentProjectDonationRequests)
 	}
 }

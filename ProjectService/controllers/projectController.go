@@ -48,33 +48,31 @@ func CreateProject(c *gin.Context) {
 	}
 
 	// Call the Filter function via gRPC using the client setup
-	//client, conn, err := NewFilteringServiceClient()
-	//if err != nil {
-	//	logrus.WithFields(logrus.Fields{
-	//		"error": err.Error(),
-	//	}).Error("Failed to create gRPC client")
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create gRPC client"})
-	//	return
-	//}
-	//defer conn.Close()
-	//
-	//req := &pb.GradeRequest{
-	//	Description: projectRequest.Description,
-	//	IsProject:   true,
-	//}
-	//
-	//resp, err := client.GradeDescription(context.Background(), req)
-	//if err != nil {
-	//	logrus.WithFields(logrus.Fields{
-	//		"error": err.Error(),
-	//	}).Error("Failed to grade project description via gRPC")
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to grade project description via gRPC"})
-	//	return
-	//}
+	client, conn, err := NewFilteringServiceClient()
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error("Failed to create gRPC client")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create gRPC client"})
+		return
+	}
+	defer conn.Close()
 
-	// gptGrade := int(resp.Grade)
+	req := &pb.GradeRequest{
+		Description: projectRequest.Description,
+		IsProject:   true,
+	}
 
-	gptGrade := 9
+	resp, err := client.GradeDescription(context.Background(), req)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"error": err.Error(),
+		}).Error("Failed to grade project description via gRPC")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to grade project description via gRPC"})
+		return
+	}
+
+	gptGrade := int(resp.Grade)
 
 	if gptGrade <= 6 {
 		logrus.Info("Refused to create project: grade <= 6")

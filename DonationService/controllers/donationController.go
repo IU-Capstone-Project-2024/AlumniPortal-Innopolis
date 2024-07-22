@@ -74,8 +74,10 @@ func GetCurrentUserDonationRequests(c *gin.Context) {
 
 func GetCurrentProjectDonationRequests(c *gin.Context) {
 	var donationRequests []sharedModels.Donation
-	project, _ := c.Get("project")
-	if err := initializers.DB.Where("project_id = ?", project.(sharedModels.Project).ID).Preload("Project").Find(&donationRequests).Error; err != nil {
+
+	projectId := c.Param("id")
+
+	if err := initializers.DB.Where("project_id = ?", projectId).Preload("Project").Find(&donationRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"project_id": project.(sharedModels.Project).ID,
 			"error":      err.Error(),
