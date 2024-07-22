@@ -77,7 +77,7 @@ func GetCurrentProjectDonationRequests(c *gin.Context) {
 
 	projectId := c.Param("id")
 
-	if err := initializers.DB.Where("project_id = ?", projectId).Preload("Project").Find(&donationRequests).Error; err != nil {
+	if err := initializers.DB.Where("project_id = ?", projectId).Preload("Project").Preload("User").Find(&donationRequests).Error; err != nil {
 		logrus.WithFields(logrus.Fields{
 			"project_id": projectId,
 			"error":      err.Error(),

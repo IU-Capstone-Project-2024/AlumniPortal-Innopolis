@@ -57,17 +57,17 @@ func Filter(description string, isProject bool) (int, error) {
 		suffix = "event"
 	}
 
-	promptHeader := "Grade the " + suffix + " description according to the rules. WRITE ONLY THE GRADE FROM 1 TO 10"
-	promptBody := "Description: \n" + description + "\n" +
-		"Rules:\n" +
-		"1. Submissions must be related to IT, computer science, or technology fields.\n" +
+	promptHeader := "Grade the " + suffix + " description that must be written according to the rules.\n " +
+		"Rules:\n" + "\n1. Submissions must be related to IT, computer science, or technology fields.\n" +
 		"2. Projects must have a clear objective, scope, and potential impact.\n" +
 		"3. A detailed project description must be provided, including goals, methodology, expected outcomes.\n" +
 		"4. Submissions should clearly state the problem the project aims to solve and how it proposes to solve it.\n" +
 		"5. Projects requiring specialized equipment or software must detail how these will be procured and used.\n" +
 		"6. Projects must comply with all university policies and guidelines.\n" +
 		"7. Submissions must adhere to ethical standards, including respect for intellectual property, privacy, and data protection laws.\n" +
-		"8. Projects involving human subjects must obtain appropriate ethical approvals.\n"
+		"8. Projects involving human subjects must obtain appropriate ethical approvals.\n\n" +
+		"WRITE ONLY THE GRADE FROM 1 TO 10"
+	promptBody := suffix + "Description: \n" + description
 
 	requestBodyMap := map[string]interface{}{
 		"modelUri": "gpt://b1ge4v0vv3t1uubfd7an/yandexgpt-lite",
