@@ -3,21 +3,34 @@ export const useProjectStore = defineStore({
     id: 'project-store',
     state: () => {
         return {
-            projects: null
+            projects: []
         }
     },
     actions: {
         async fetchProjects() {
-            try{
-                const res = fetch('https://api.alumni-portal.ru/projects', {
+            try {
+                const response = await fetch('https://api.alumni-portal.ru/projects', {
                     credentials: "include",
                 })
                 if (response.ok) {
-                   const data = await res.json();
-                   console.log(data);
+                    const data = await response.json();
+                    for (const project of data) {
+                        this.addProject({
+                            id: project.ID,
+                            url: 'inno.png',
+                            title: project.Name,
+                            desc: project.Description,
+                            collected: project.Collected,
+                            goal: project.Goal,
+                        })
+                    }
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Project fetch failed');
                 }
             } catch (error) {
-                console.error('Fetch project error', error);
+                console.error('Fetch prj error', error);
+                throw error;
             }
         },
         addProject(project) {
